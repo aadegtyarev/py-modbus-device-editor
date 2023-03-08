@@ -195,7 +195,7 @@ class UiManager:
 
     def write_log(self, text):
         self.log.configure(state='normal')
-        res = self.log.insert(END, '{} | {}\n'.format(
+        res = self.log.insert(END, '{} | {} \n'.format(
             f"{datetime.now():%H:%M:%S}", text))
         self.log.configure(state='disabled')
         return 0
@@ -352,7 +352,7 @@ class UiManager:
 
     def widget_show(self, widget_id):
         widget = self.widgets[widget_id]
-        widget.pack(opts)
+        widget.pack()
 
     def open_file(self):
         file_patch = filedialog.askopenfilename()
