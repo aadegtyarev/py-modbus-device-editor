@@ -118,12 +118,11 @@ class App():
     def btn_open_template_click(self, event):
         filepath = self.ui.open_file()
         if (len(filepath) > 0):
-            # Создаём контролы из параметров в шаблоне
+            self.ui.delete_widgets()
             self.load_template(filepath)
             try:
                 self.ui.write_log('Формирую интерфейс')
                 self.fill_window()
-                print(self.ui.btn_open_template.state())
             except Exception as e:
                 self.ui.write_log('Ошибка:')
                 self.ui.write_log(traceback.format_exc())

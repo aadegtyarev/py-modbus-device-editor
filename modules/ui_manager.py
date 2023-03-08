@@ -30,7 +30,7 @@ class UiManager:
 # Верхняя часть окна с настройками подключения
         top_frame = self.create_frame(
             parent=self.win,
-            id='top_frame',
+            id='nodel_top_frame',
             side=TOP,
             fill=X,
             expand=False,
@@ -39,7 +39,7 @@ class UiManager:
 
         mb_settings = self.create_group(
             parent=top_frame,
-            id='mb_settings',
+            id='nodel_mb_settings',
             title='Настройки подключения',
             side=LEFT,
             fill=BOTH,
@@ -48,7 +48,7 @@ class UiManager:
 
         mb_port = self.create_combobox(
             parent=mb_settings,
-            id='mb_port',
+            id='nodel_mb_port',
             title='Порт',
             dic=self.get_ports(),
             default=0,
@@ -59,7 +59,7 @@ class UiManager:
 
         mb_baudrate = self.create_combobox(
             parent=mb_settings,
-            id='mb_baudrate',
+            id='nodel_mb_baudrate',
             title='Порт',
             dic=self.gen_baudrate_dic(),
             default=9600,
@@ -70,7 +70,7 @@ class UiManager:
 
         mb_bytesize = self.create_combobox(
             parent=mb_settings,
-            id='mb_bytesize',
+            id='nodel_mb_bytesize',
             title='Биты данных',
             dic=self.gen_bytesize_dic(),
             default=8,
@@ -81,7 +81,7 @@ class UiManager:
 
         mb_parity = self.create_combobox(
             parent=mb_settings,
-            id='mb_parity',
+            id='nodel_mb_parity',
             title='Четность',
             dic=self.gen_parity_dic(),
             default='N',
@@ -92,7 +92,7 @@ class UiManager:
 
         mb_stopbits = self.create_combobox(
             parent=mb_settings,
-            id='mb_stopbits',
+            id='nodel_mb_stopbits',
             title='Стоп биты',
             dic=self.gen_stopbits_dic(),
             default=2,
@@ -103,7 +103,7 @@ class UiManager:
 
         mb_actions = self.create_group(
             parent=top_frame,
-            id='mb_actions',
+            id='nodel_mb_actions',
             title='Чтение/запись параметров',
             side=LEFT,
             fill=BOTH,
@@ -112,7 +112,7 @@ class UiManager:
 
         self.mb_slave_id = self.create_spinbox(
             parent=mb_actions,
-            id='mb_slave_id',
+            id='nodel_mb_slave_id',
             title='Адрес',
             min_=0,
             max_=247,
@@ -125,7 +125,7 @@ class UiManager:
 
         self.btn_open_template = self.create_button(
             parent=mb_actions,
-            id='btn_open_template',
+            id='nodel_btn_open_template',
             title='Открыть шаблон',
             side=LEFT,
             anchor=SW
@@ -133,7 +133,7 @@ class UiManager:
 
         self.btn_read_params = self.create_button(
             parent=mb_actions,
-            id='btn_read_params',
+            id='nodel_btn_read_params',
             title='Читать параметры',
             side=LEFT,
             anchor=SW
@@ -141,7 +141,7 @@ class UiManager:
 
         self.btn_write_params = self.create_button(
             parent=mb_actions,
-            id='btn_write_params',
+            id='nodel_btn_write_params',
             title='Записать параметры',
             side=LEFT,
             anchor=SW
@@ -150,7 +150,7 @@ class UiManager:
 # Нижняя часть окна
         bottom_frame = self.create_frame(
             parent=self.win,
-            id='bottom_frame',
+            id='nodel_bottom_frame',
             side=TOP,
             fill=BOTH,
             expand=True
@@ -159,7 +159,7 @@ class UiManager:
 # Левый фрейм
         left_frame = self.create_group(
             parent=bottom_frame,
-            id='left_frame',
+            id='nodel_left_frame',
             title='Настройки устройства',
             side=LEFT,
             fill=BOTH,
@@ -168,7 +168,7 @@ class UiManager:
 
         self.notebook = self.create_notebook(
             parent=left_frame,
-            id='params_notebook',
+            id='nodel_params_notebook',
             side=TOP,
             fill=BOTH,
             expand=True
@@ -177,7 +177,7 @@ class UiManager:
 # Правый фрейм
         right_frame = self.create_group(
             parent=bottom_frame,
-            id='right_frame',
+            id='nodel_right_frame',
             title='Журнал',
             side=LEFT,
             fill=Y
@@ -185,7 +185,7 @@ class UiManager:
 
         self.log = self.create_scrolled_text(
             parent=right_frame,
-            id='log',
+            id='nodel_log',
             width=50,
             side=LEFT,
             fill=BOTH,
@@ -234,6 +234,9 @@ class UiManager:
     def create_tab(self, id, title):
         tab = ttk.Frame(self.notebook)
         self.notebook.add(tab, text=title)
+        tab.type = 'nb_tab'
+        self.widgets[id+'nb_tab'] = tab
+
         viewport = self.create_viewport(tab, id)
         viewport.curr_row = 0
         viewport.curr_col = 0
@@ -356,13 +359,14 @@ class UiManager:
         return file_patch
 
     def remove_widgets_item(self, key):
+        print('Удаляю id:{} type:{}'.format(key, self.widgets[key].type))
         self.widgets[key].destroy()
         del self.widgets[key]
 
-    def clear_auto_widgets(self):
+    def delete_widgets(self):
         widgets = dict(self.widgets)
         for key in widgets:
-            if (widgets[key].auto == True):
+            if ('nodel_' not in key):
                 self.remove_widgets_item(key)
 
     def get_ports(self):
