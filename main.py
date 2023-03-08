@@ -67,6 +67,7 @@ class App():
         return res
 
     def fill_window(self):
+        # Перебираем группы и создаём для верхнего уровня табы, а для остальных — группы
         for item in self.groups:
             title = self.reader.get_translate(item['title'])
             condition = item.get('condition')
@@ -101,8 +102,9 @@ class App():
                 else:
                     print('Не нашёл контрол {}'.format(parent_id))
 
+            # Запрашиваем параметры, у которых одна группа
             parameters = self.get_params_by_group(id_group)
-
+            # Перебираем параметры с одной группой и создаём для них виджеты
             for key in parameters:
                 item = parameters[key]
                 condition = item.get('condition')
@@ -173,23 +175,55 @@ class App():
             try:
                 self.ui.write_log('Формирую интерфейс редактора.')
                 self.fill_window()
+                # Скрываем виджеты, которые не должны быть отображены
                 self.widgets_hide_by_condition()
                 self.ui.write_log(
                     'Укажите адрес устройства, а потом прочитайте из него параметры. Внесите изменения и запишите параметры в устройство.')
             except Exception as e:
                 self.ui.write_log('Ошибка:')
                 self.ui.write_log(traceback.format_exc())
+# Чтение параметров из устройства
+
+    def read_parameters(self, slave_id):
+        self.mb.ui = self.ui
+        for key in self.params:
+            items = self.params.get(key)
+            reg_type = items['reg_type']
+            errors_cnt = 0
+            if (reg_type == 'holding'):
+                value = self.mb.read_holding(slave_id, items['address'])
+                if (value != 'error'):
+                    errors_cnt += 1
+                    if (value == 'fatal_error'):
+                        break
+                    widget = self.ui.widgets[key]
+                    value = value[0]
+                    if (widget.type == 'spinbox'):
+                        if ('scale' in items):
+                            scale = items['scale']
+                            value = value*scale
+                            self.ui.widgets[key].set(value)
+                        else:
+                            self.ui.widgets[key].set(value)
+                    else:
+                        if (widget.type == 'combobox'):
+                            dic = widget.dic
+                            index = dic['enum'].index(value)
+                            widget.current(index)
+                else:
+                    self.ui.widget_hide(key)
+        if (errors_cnt > 0):
+            self.ui.write_log(
+                'Некоторые регистры не были прочитаны. Возможно, их нет в этой версии прошивки устройства. Отсутствующие параметры были скрыты из редактора.')
 
     def btn_read_params_click(self, event):
         self.mb = modbus.ModbusRTUClient()
-        port = self.ui.get_value('ports')
-        baudrate = self.ui.get_value('buadrate')
-
-        self.mb.init(port, baudrate)
-        slave_id = int(self.ui.get_value('slave_id'))
+        mb_params = self.ui.get_modbus_params()
+        self.mb.init(mb_params)
+        slave_id = int(mb_params['slave_id'])
         self.mb.connect()
-        self.read_parameters(mb, slave_id)
-        self.widgets_view_manager()
+        self.read_parameters(slave_id)
+        self.widgets_hide_by_condition()
         self.mb.disconnect()
 
     def btn_write_params_click(self, event):

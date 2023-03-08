@@ -1,29 +1,17 @@
-from EventNotifier import Notifier
+from tkinter import *
 
-# Представьте, что у нас есть фрагмент кода, который интересуется некоторыми событиями
-# встречается в других частях кода...
+tk = Tk()
+tk.withdraw()
 
-
-class FileWatchDog():
-    def onOpen(self, fileName, openMode):
-        print(f"File {fileName} opened with {openMode} mode")
-
-    def onClose(self, fileName):
-        print(f"File {fileName} closed")
+d = DoubleVar(master=tk, value=0)
 
 
-watchDog = FileWatchDog()
+def my_event_handler(*args):
+    amount = "{:.2f}".format(d.get())
+    print("$"+amount)
 
-# Создайте объект Notifier, предоставив список событий, которые могут быть интересны другим компонентам
 
-notifier = Notifier(["onCreate", "onOpen", "onModify", "onClose", "onDelete"])
+d.trace(mode="w", callback=my_event_handler)
 
-# Теперь другие объекты могут подписываться на события, которые мы объявили выше
-# Важно использовать то же имя, которое было объявлено при создании объекта Notifier
-# Рассмотрите возможность использования объявлений констант или перечислений, чтобы избежать здесь опечаток
-notifier.subscribe("onOpen",  watchDog.onOpen)
-notifier.subscribe("onClose", watchDog.onClose)
-
-# порядок именованных параметров не важен
-notifier.raise_event("onOpen", openMode="w+", fileName="test_file.txt")
-notifier.raise_event("onClose", fileName="test_file.txt")
+d.set(5.55)
+d.set(15.12)

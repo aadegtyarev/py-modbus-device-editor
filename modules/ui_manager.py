@@ -212,6 +212,7 @@ class UiManager:
         scrool_frame = ui_scroll_frame.ScrollFrame(parent)
         viewport = scrool_frame.viewPort
         scrool_frame.pack(side=LEFT, fill=BOTH, expand=True)
+        scrool_frame.pack_info = self.get_pack_info(scrool_frame)
         viewport.type = 'viewport'
         self.widgets[id] = viewport
         return viewport
@@ -221,12 +222,14 @@ class UiManager:
         row_frame.type = 'row'
         row_frame.pack(padx=5, pady=5, side=TOP,
                        fill='x', expand='no')
+        row_frame.pack_info = self.get_pack_info(row_frame)
         self.widgets[id] = row_frame
         return row_frame
 
     def create_notebook(self, parent, id, **opts):
         notebook = ttk.Notebook(parent)
         notebook.pack(**opts)
+        notebook.pack_info = self.get_pack_info(notebook)
         notebook.type = 'notebook'
         self.widgets[id] = notebook
         return notebook
@@ -251,6 +254,7 @@ class UiManager:
         scrolled_text = scrolltext.ScrolledText(
             parent, width=width, wrap="word")
         scrolled_text.pack(**opts)
+        scrolled_text.pack_info = self.get_pack_info(scrolled_text)
         scrolled_text.type = 'scrolled_text'
         self.widgets[id] = scrolled_text
         return scrolled_text
@@ -259,6 +263,7 @@ class UiManager:
         group = ttk.LabelFrame(parent, text=title, relief=relief)
         group.type = 'group'
         group.pack(padx=5, pady=5, **opts)
+        group.pack_info = self.get_pack_info(group)
         self.widgets[id] = group
         return group
 
@@ -266,6 +271,7 @@ class UiManager:
         label = ttk.Label(parent, text=title)
         label.type = 'label'
         label.pack(padx=5, pady=5, **opts)
+        label.pack_info = self.get_pack_info(label)
         self.widgets[id] = label
         return label
 
@@ -273,6 +279,7 @@ class UiManager:
         button = ttk.Button(parent, text=title, command=command)
         button.type = 'button'
         button.pack(padx=5, pady=5, **opts)
+        button.pack_info = self.get_pack_info(button)
         self.widgets[id] = button
         return button
 
@@ -285,6 +292,7 @@ class UiManager:
         combobox.type = 'combobox'
         combobox.dic = dic
         combobox.pack(padx=5, pady=0, side=TOP, anchor=NW)
+        combobox.pack_info = self.get_pack_info(combobox)
         self.widgets[id] = combobox
 
         if (default in dic['enum']):
@@ -300,6 +308,11 @@ class UiManager:
         else:
             fmt = '%.0f'
         return fmt
+
+    def get_pack_info(self, widget):
+        info = widget.pack_info()
+        del info['in']
+        return info
 
     def create_spinbox(self, parent, id, title, min_, max_, value_type, default, width, description, **opts):
         if (min_ == None):
@@ -318,16 +331,34 @@ class UiManager:
         spinbox.set(default)
 
         spinbox.type = 'spinbox'
+        # spinbox.opts = {'padx'=5, 'pady'=0, 'side'=TOP, 'anchor'=NW}
         spinbox.pack(padx=5, pady=0, side=TOP, anchor=NW)
+        spinbox.pack_info = self.get_pack_info(spinbox)
         self.widgets[id] = spinbox
 
         if (description):
-            self.create_label(group, id+'_decsription',
-                              'min:{} max:{} default: {}'.format(min_, max_, default))
+            self.create_label(group,
+                              id+'_decsription',
+                              'min:{} max:{} default: {}'.format(
+                                  min_, max_, default),
+                              anchor=NW
+                              )
         return spinbox
 
     def is_exists_widget(self, id):
         return (widgets.get(id) != None)
+
+    def get_value(self, widget_id):
+        widget = self.widgets[widget_id]
+
+        if (widget.type == 'spinbox'):
+            return widget.get()
+
+        if (widget.type == 'combobox'):
+            dic = widget.dic
+            value = widget.get()
+            index = dic['enum_titles'].index(value)
+            return dic['enum'][index]
 
     def get_values(self):
         widgets = self.widgets
@@ -346,20 +377,30 @@ class UiManager:
 
         return values
 
+    def get_modbus_params(self):
+        return {
+            'slave_id': self.get_value('nodel_mb_slave_id'),
+            'port': self.get_value('nodel_mb_port'),
+            'baudrate': self.get_value('nodel_mb_baudrate'),
+            'bytesize': self.get_value('nodel_mb_bytesize'),
+            'parity': self.get_value('nodel_mb_parity'),
+            'stopbits': self.get_value('nodel_mb_stopbits'),
+            'slave_id': self.get_value('nodel_mb_slave_id')
+        }
+
     def widget_hide(self, widget_id):
         widget = self.widgets[widget_id]
         widget.pack_forget()
 
     def widget_show(self, widget_id):
         widget = self.widgets[widget_id]
-        widget.pack()
+        widget.pack(widget.pack_info)
 
     def open_file(self):
         file_patch = filedialog.askopenfilename()
         return file_patch
 
     def remove_widgets_item(self, key):
-        print('Удаляю id:{} type:{}'.format(key, self.widgets[key].type))
         self.widgets[key].destroy()
         del self.widgets[key]
 

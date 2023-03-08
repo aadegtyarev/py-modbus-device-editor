@@ -1,16 +1,24 @@
 import traceback
 import logging
 from pymodbus.client import ModbusSerialClient
+from . import ui_manager
 
 
-class ModbusRTUClient:
+class ModbusRTUClient ():
     client = None
     errors_count = 0
-    max_errors = 3
+    max_errors = 5
+    ui = None
 
-    def init(self, port, baudrate=9600, bytesize=8, parity='N', stopbits=2):
+    def init(self, mb_params):
+
         self.client = ModbusSerialClient(
-            port=port, baudrate=baudrate, bytesize=bytesize, parity=parity, stopbits=stopbits)
+            port=mb_params['port'],
+            baudrate=mb_params['baudrate'],
+            bytesize=mb_params['bytesize'],
+            parity=mb_params['parity'],
+            stopbits=mb_params['stopbits']
+        )
 
     def connect(self):
         self.client.connect()
@@ -35,12 +43,12 @@ class ModbusRTUClient:
             self.errors_count = 0
         except:
             value = 'error'
-            print('Не смог прочитать регистр: {}, {}'.format(
-                slave_id, reg_address))
+            self.ui.write_log(
+                'Не смог прочитать регистр: {}, {}'.format(slave_id, reg_address))
             self.errors_count += 1
             if (self.errors_count == self.max_errors):
-                print('Не смог прочитать {} регистра подряд и остановил работу'.format(
-                    self.errors_count))
+                self.ui.write_log(
+                    'Не смог прочитать {} регистров подряд и остановил работу.'.format(self.errors_count))
                 self.errors_count = 0
                 value = 'fatal_error'
                 return value
@@ -58,7 +66,7 @@ class ModbusRTUClient:
         except Exception as e:
             logging.error(traceback.format_exc())
             res = 'error'
-            print('Не смог записать регистр: {}, {}'.format(
+            self.ui.write_log('Не смог записать регистр: {}, {}.'.format(
                 slave_id, reg_address))
 
         return res
