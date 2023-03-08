@@ -54,9 +54,11 @@ class App():
                     )
                 )
             )
+            return True
         except Exception as e:
             self.ui.write_log('Ошибка:')
             self.ui.write_log(traceback.format_exc())
+            return False
 
     def is_main_group(self, item):
         return 'group' not in item
@@ -173,14 +175,15 @@ class App():
         filepath = self.ui.open_file()
         if (len(filepath) > 0):
             self.ui.delete_widgets()
-            self.load_template(filepath)
+
             try:
-                self.ui.write_log('Формирую интерфейс редактора.')
-                self.fill_window()
-                # Скрываем виджеты, которые не должны быть отображены
-                self.widgets_hide_by_condition()
-                self.ui.write_log(
-                    'Укажите адрес устройства, а потом прочитайте из него параметры. Внесите изменения и запишите параметры в устройство.')
+                if (self.load_template(filepath)):
+                    self.ui.write_log('Формирую интерфейс редактора.')
+                    self.fill_window()
+                    # Скрываем виджеты, которые не должны быть отображены
+                    self.widgets_hide_by_condition()
+                    self.ui.write_log(
+                        'Укажите адрес устройства, а потом прочитайте из него параметры. Внесите изменения и запишите параметры в устройство.')
             except Exception as e:
                 self.ui.write_log('Ошибка:')
                 self.ui.write_log(traceback.format_exc())
