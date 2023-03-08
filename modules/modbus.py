@@ -58,8 +58,8 @@ class ModbusRTUClient ():
 
     def write_holding(self, slave_id, reg_address, value):
         try:
-            print('Пишу: {}, {} = value: {}'.format(
-                slave_id, reg_address, value))
+            # print('Пишу: {}, {} = value: {}'.format(
+            #     slave_id, reg_address, value))
             self.client.write_register(
                 address=reg_address, slave=slave_id, value=int(value))
             res = 'ok'

@@ -9,6 +9,7 @@ class App():
     json_file = None
     reader = None
     ui = None
+    mb = None
     groups = {}
     params = {}
     max_col = 2
@@ -17,6 +18,7 @@ class App():
         # Создаём объекты для работы
         self.reader = wb_template_reader.WbTemplateReader()
         self.ui = ui_manager.UiManager()
+        self.mb = modbus.ModbusRTUClient()
 
         # Подписываемся на события кнопок
         self.ui.btn_open_template.bind(
@@ -217,17 +219,48 @@ class App():
                 'Некоторые регистры не были прочитаны. Возможно, их нет в этой версии прошивки устройства. Отсутствующие параметры были скрыты из редактора.')
 
     def btn_read_params_click(self, event):
-        self.mb = modbus.ModbusRTUClient()
-        mb_params = self.ui.get_modbus_params()
-        self.mb.init(mb_params)
-        slave_id = int(mb_params['slave_id'])
-        self.mb.connect()
-        self.read_parameters(slave_id)
-        self.widgets_hide_by_condition()
-        self.mb.disconnect()
+        try:
+            self.ui.write_log('Читаю регистры устройства.')
+            mb_params = self.ui.get_modbus_params()
+            self.mb.init(mb_params)
+
+            slave_id = int(mb_params['slave_id'])
+            self.mb.connect()
+            self.read_parameters(slave_id)
+            self.widgets_hide_by_condition()
+
+            self.mb.disconnect()
+            self.ui.write_log('Прочитал, можно вносить изменения.')
+        except Exception as e:
+            self.ui.write_log('Ошибка:')
+            self.ui.write_log(traceback.format_exc())
+
+# Запись параметров в устройство
+    def write_parameters(self, slave_id):
+        for key in self.params:
+            items = self.params.get(key)
+            reg_type = items['reg_type']
+            if (reg_type == 'holding'):
+                value = self.ui.get_value(key)
+                if ('scale' in items):
+                    value = value/items['scale']
+                value = self.mb.write_holding(
+                    slave_id, items['address'], value)
 
     def btn_write_params_click(self, event):
-        print('btn_write_params')
+        try:
+            self.ui.write_log('Пишу параметры устройства.')
+            mb_params = self.ui.get_modbus_params()
+            self.mb.init(mb_params)
+
+            slave_id = int(mb_params['slave_id'])
+            self.mb.connect()
+            self.write_parameters(slave_id)
+            self.mb.disconnect()
+            self.ui.write_log('Записал.')
+        except Exception as e:
+            self.ui.write_log('Ошибка:')
+            self.ui.write_log(traceback.format_exc())
 
 
 app = App()
