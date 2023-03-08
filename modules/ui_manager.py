@@ -198,6 +198,7 @@ class UiManager:
         res = self.log.insert(END, '{} | {} \n'.format(
             f"{datetime.now():%H:%M:%S}", text))
         self.log.configure(state='disabled')
+        self.log.see("end")
         return 0
 
     def create_frame(self, parent, id, side, fill, expand, **args):
