@@ -1,7 +1,6 @@
 import traceback
 from modules import wb_template_reader
 from modules import ui_manager
-import serial.tools.list_ports
 from modules import modbus
 from tkinter import *
 
@@ -16,12 +15,21 @@ class App():
 
     def __init__(self):
         self.json_file = 'templates/config-wb-mr6c.json'
+
+        # Создаём объекты для работы
         self.reader = wb_template_reader.WbTemplateReader()
         self.ui = ui_manager.UiManager()
         self.load_template(self.json_file)
 
-        self.ui.btn_read_parameters.bind('<ButtonPress-1>', self.btn_click)
+        # Подписываемся на события кнопок
+        self.ui.btn_open_template.bind(
+            '<ButtonPress-1>', self.btn_open_template_click)
+        self.ui.btn_read_params.bind(
+            '<ButtonPress-1>', self.btn_read_params_click)
+        self.ui.btn_write_params.bind(
+            '<ButtonPress-1>', self.btn_write_params_click)
 
+        # Создаём контролы из параметров в шаблоне
         try:
             self.ui.write_log('Формирую интерфейс')
             self.fill_window()
@@ -97,7 +105,7 @@ class App():
                     default = item['default']
                     dic = self.reader.get_enum_dic(item)
                     param_widget = self.ui.create_combobox(
-                        group_widget, key, title, dic, default)
+                        group_widget, key, title, dic, default, width=40, anchor=NW)
                 else:
                     default = item.get('default')
                     min_ = item.get('min')
@@ -108,10 +116,17 @@ class App():
                         value_type = 'inc'
 
                     param_widget = self.ui.create_spinbox(
-                        group_widget, key, title, min_, max_, value_type, default)
+                        group_widget, key, title,
+                        min_, max_, value_type, default, width=20, description=True, anchor=NW)
 
-    def btn_click(self, event):
-        print('btn_read_parameters')
+    def btn_open_template_click(self, event):
+        print('btn_open_template')
+
+    def btn_read_params_click(self, event):
+        print('btn_read_params')
+
+    def btn_write_params_click(self, event):
+        print('btn_write_params')
 
 
 app = App()

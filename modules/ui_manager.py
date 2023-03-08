@@ -2,6 +2,7 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 import tkinter.scrolledtext as scrolltext
+import serial.tools.list_ports
 
 from tkinter import filedialog
 from datetime import datetime
@@ -13,15 +14,20 @@ class UiManager:
     win = None
     log = None
     notebook = None
-    btn_read_parameters = None
+
+    btn_read_params = None
+    btn_write_params = None
+    btn_open_template = None
 
     def __init__(self):
         self.win = Tk()
+        self.win.title('Python Modbus Device Editor')
         self.win.geometry('1366x750')
 
         style = ttk.Style(self.win)
         style.theme_use("clam")
 
+# Верхняя часть окна с настройками подключения
         top_frame = self.create_frame(
             parent=self.win,
             id='top_frame',
@@ -33,20 +39,115 @@ class UiManager:
 
         mb_settings = self.create_group(
             parent=top_frame,
-            id='top_frame',
+            id='mb_settings',
             title='Настройки подключения',
-            side=TOP,
+            side=LEFT,
             fill=BOTH,
             expand=True
         )
 
-        self.btn_read_parameters = self.create_button(
+        mb_port = self.create_combobox(
             parent=mb_settings,
-            id='mb_settings',
-            title='Читать настройки',
-            side=RIGHT
+            id='mb_port',
+            title='Порт',
+            dic=self.get_ports(),
+            default=0,
+            width=40,
+            side=LEFT,
+            anchor=SW
         )
 
+        mb_baudrate = self.create_combobox(
+            parent=mb_settings,
+            id='mb_baudrate',
+            title='Порт',
+            dic=self.gen_baudrate_dic(),
+            default=9600,
+            width=8,
+            side=LEFT,
+            anchor=SW
+        )
+
+        mb_bytesize = self.create_combobox(
+            parent=mb_settings,
+            id='mb_bytesize',
+            title='Биты данных',
+            dic=self.gen_bytesize_dic(),
+            default=8,
+            width=8,
+            side=LEFT,
+            anchor=SW
+        )
+
+        mb_parity = self.create_combobox(
+            parent=mb_settings,
+            id='mb_parity',
+            title='Четность',
+            dic=self.gen_parity_dic(),
+            default='N',
+            width=8,
+            side=LEFT,
+            anchor=SW
+        )
+
+        mb_stopbits = self.create_combobox(
+            parent=mb_settings,
+            id='mb_stopbits',
+            title='Стоп биты',
+            dic=self.gen_stopbits_dic(),
+            default=2,
+            width=8,
+            side=LEFT,
+            anchor=SW
+        )
+
+        mb_actions = self.create_group(
+            parent=top_frame,
+            id='mb_actions',
+            title='Чтение/запись параметров',
+            side=LEFT,
+            fill=BOTH,
+            expand=True
+        )
+
+        self.mb_slave_id = self.create_spinbox(
+            parent=mb_actions,
+            id='mb_slave_id',
+            title='Адрес',
+            min_=0,
+            max_=247,
+            value_type='int',
+            default=1,
+            width=4,
+            description=False,
+            side=LEFT
+        )
+
+        self.btn_open_template = self.create_button(
+            parent=mb_actions,
+            id='btn_open_template',
+            title='Открыть шаблон',
+            side=LEFT,
+            anchor=SW
+        )
+
+        self.btn_read_params = self.create_button(
+            parent=mb_actions,
+            id='btn_read_params',
+            title='Читать настройки',
+            side=LEFT,
+            anchor=SW
+        )
+
+        self.btn_write_params = self.create_button(
+            parent=mb_actions,
+            id='btn_write_params',
+            title='Записать настройки',
+            side=LEFT,
+            anchor=SW
+        )
+
+# Нижняя часть окна
         bottom_frame = self.create_frame(
             parent=self.win,
             id='bottom_frame',
@@ -55,6 +156,7 @@ class UiManager:
             expand=True
         )
 
+# Левый фрейм
         left_frame = self.create_group(
             parent=bottom_frame,
             id='left_frame',
@@ -72,6 +174,7 @@ class UiManager:
             expand=True
         )
 
+# Правый фрейм
         right_frame = self.create_group(
             parent=bottom_frame,
             id='right_frame',
@@ -170,12 +273,12 @@ class UiManager:
         self.widgets[id] = button
         return button
 
-    def create_combobox(self, parent, id, title, dic, default):
+    def create_combobox(self, parent, id, title, dic, default, width, **opts):
         enums = dic['enum_titles']
         group = self.create_group(
-            parent, id+'title', title, relief=FLAT, side=TOP)
+            parent, id+'title', title, relief=FLAT, **opts)
         combobox = ttk.Combobox(group, values=enums,
-                                state="readonly", width=40)
+                                state="readonly", width=width)
         combobox.type = 'combobox'
         combobox.dic = dic
         combobox.pack(padx=5, pady=0, side=TOP, anchor=NW)
@@ -195,7 +298,7 @@ class UiManager:
             fmt = '%.0f'
         return fmt
 
-    def create_spinbox(self, parent, id, title, min_, max_, value_type, default):
+    def create_spinbox(self, parent, id, title, min_, max_, value_type, default, width, description, **opts):
         if (min_ == None):
             min_ = 0.0
         if (max_ == None):
@@ -203,9 +306,9 @@ class UiManager:
         fmt = self.get_combobox_format(value_type)
 
         group = self.create_group(
-            parent, id+'title', title, relief=FLAT, side=TOP)
+            parent, id+'title', title, relief=FLAT, **opts)
         spinbox = ttk.Spinbox(group, from_=min_, to=max_,
-                              format=fmt, width=20)
+                              format=fmt, width=width)
 
         if (default == None):
             default = 0
@@ -215,8 +318,9 @@ class UiManager:
         spinbox.pack(padx=5, pady=0, side=TOP, anchor=NW)
         self.widgets[id] = spinbox
 
-        self.create_label(group, id+'_decsription',
-                          'min:{} max:{} default: {}'.format(min_, max_, default))
+        if (description):
+            self.create_label(group, id+'_decsription',
+                              'min:{} max:{} default: {}'.format(min_, max_, default))
         return spinbox
 
     def is_exists_widget(self, id):
@@ -260,3 +364,51 @@ class UiManager:
         for key in widgets:
             if (widgets[key].auto == True):
                 self.remove_widgets_item(key)
+
+    def get_ports(self):
+        enum = []
+        enum_titles = []
+        ports = list(serial.tools.list_ports.comports())
+        for port, desc, hwid in sorted(ports):
+            enum.append(port)
+            enum_titles.append("{}: {}".format(port, desc))
+
+        return {'enum': enum, 'enum_titles': enum_titles}
+
+    def gen_baudrate_dic(self):
+        enum = [9600, 19200, 38400, 57600, 115200]
+        enum_titles = [
+            '9600',
+            '19200',
+            '38400',
+            '57600',
+            '115200'
+        ]
+        return {'enum': enum, 'enum_titles': enum_titles}
+
+    def gen_bytesize_dic(self):
+        enum = [5, 6, 7, 8]
+        enum_titles = [
+            '5',
+            '6',
+            '7',
+            '8'
+        ]
+        return {'enum': enum, 'enum_titles': enum_titles}
+
+    def gen_parity_dic(self):
+        enum = ['N', 'E', 'O']
+        enum_titles = [
+            'N',
+            'E',
+            'O'
+        ]
+        return {'enum': enum, 'enum_titles': enum_titles}
+
+    def gen_stopbits_dic(self):
+        enum = [1, 2]
+        enum_titles = [
+            '1',
+            '2'
+        ]
+        return {'enum': enum, 'enum_titles': enum_titles}
