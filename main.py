@@ -73,7 +73,6 @@ class App():
             id_group = item['id']
             if (self.is_main_group(item)):
                 group_widget = self.ui.create_tab(id_group, title)
-                group_widget.condition = condition
                 curr_frame = group_widget.curr_frame
             else:
                 parent_id = item['group']
@@ -99,7 +98,6 @@ class App():
 
                                 parent.curr_col = 0
                                 parent.curr_row += 1
-                        group_widget.condition = condition
                 else:
                     print('Не нашёл контрол {}'.format(parent_id))
 
@@ -110,6 +108,7 @@ class App():
                 condition = item.get('condition')
                 title = self.reader.get_translate(item['title'])
                 param_type = self.reader.get_parameter_type(item)
+                group_widget.condition = condition
                 if (group_widget.type == 'tab'):
                     group_widget = group_widget.child_wrap
 
