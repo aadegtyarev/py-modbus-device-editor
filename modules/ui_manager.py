@@ -13,6 +13,7 @@ class UiManager:
     win = None
     log = None
     notebook = None
+    btn_read_parameters = None
 
     def __init__(self):
         self.win = Tk()
@@ -39,14 +40,12 @@ class UiManager:
             expand=True
         )
 
-        btn_read_parameters = self.create_button(
+        self.btn_read_parameters = self.create_button(
             parent=mb_settings,
             id='mb_settings',
             title='Читать настройки',
-            command=lambda id='mb_settings': self.on_button_click(id),
             side=RIGHT
         )
-        # btn_read_parameters.bind('<Button-1>', self.on_button_click)
 
         bottom_frame = self.create_frame(
             parent=self.win,
@@ -90,9 +89,6 @@ class UiManager:
             expand=True,
         )
         self.log.configure(state='disabled')
-
-    def on_button_click(self, button_press):
-        print(button_press)
 
     def write_log(self, text):
         self.log.configure(state='normal')

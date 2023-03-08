@@ -20,6 +20,8 @@ class App():
         self.ui = ui_manager.UiManager()
         self.load_template(self.json_file)
 
+        self.ui.btn_read_parameters.bind('<ButtonPress-1>', self.btn_click)
+
         try:
             self.ui.write_log('Формирую интерфейс')
             self.fill_window()
@@ -107,6 +109,9 @@ class App():
 
                     param_widget = self.ui.create_spinbox(
                         group_widget, key, title, min_, max_, value_type, default)
+
+    def btn_click(self, event):
+        print('btn_read_parameters')
 
 
 app = App()
