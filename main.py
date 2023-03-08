@@ -1,6 +1,8 @@
 import traceback
 from modules import wb_template_reader
 from modules import ui_manager
+import serial.tools.list_ports
+from modules import modbus
 from tkinter import *
 
 

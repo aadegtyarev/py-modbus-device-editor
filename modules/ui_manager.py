@@ -30,6 +30,24 @@ class UiManager:
             height=50
         )
 
+        mb_settings = self.create_group(
+            parent=top_frame,
+            id='top_frame',
+            title='Настройки подключения',
+            side=TOP,
+            fill=BOTH,
+            expand=True
+        )
+
+        btn_read_parameters = self.create_button(
+            parent=mb_settings,
+            id='mb_settings',
+            title='Читать настройки',
+            command=lambda id='mb_settings': self.on_button_click(id),
+            side=RIGHT
+        )
+        # btn_read_parameters.bind('<Button-1>', self.on_button_click)
+
         bottom_frame = self.create_frame(
             parent=self.win,
             id='bottom_frame',
@@ -73,6 +91,9 @@ class UiManager:
         )
         self.log.configure(state='disabled')
 
+    def on_button_click(self, button_press):
+        print(button_press)
+
     def write_log(self, text):
         self.log.configure(state='normal')
         res = self.log.insert(END, '{} | {}\n'.format(
@@ -82,7 +103,8 @@ class UiManager:
 
     def create_frame(self, parent, id, side, fill, expand, **args):
         frame = ttk.Frame(parent, **args)
-        frame.pack(padx=5, pady=5, side=side, fill=fill, expand=expand)
+        frame.pack(padx=5, pady=5, side=side,
+                   fill=fill, expand=expand)
         frame.type = 'frame'
         self.widgets[id] = frame
         return frame
@@ -98,7 +120,8 @@ class UiManager:
     def create_row(self, parent, id):
         row_frame = ttk.Frame(parent)
         row_frame.type = 'row'
-        row_frame.pack(padx=5, pady=5, side=TOP, fill='x', expand='no')
+        row_frame.pack(padx=5, pady=5, side=TOP,
+                       fill='x', expand='no')
         self.widgets[id] = row_frame
         return row_frame
 
@@ -144,6 +167,13 @@ class UiManager:
         self.widgets[id] = label
         return label
 
+    def create_button(self, parent, id, title, command=None, **opts):
+        button = ttk.Button(parent, text=title, command=command)
+        button.type = 'button'
+        button.pack(padx=5, pady=5, **opts)
+        self.widgets[id] = button
+        return button
+
     def create_combobox(self, parent, id, title, dic, default):
         enums = dic['enum_titles']
         group = self.create_group(
@@ -178,7 +208,8 @@ class UiManager:
 
         group = self.create_group(
             parent, id+'title', title, relief=FLAT, side=TOP)
-        spinbox = ttk.Spinbox(group, from_=min_, to=max_, format=fmt, width=20)
+        spinbox = ttk.Spinbox(group, from_=min_, to=max_,
+                              format=fmt, width=20)
 
         if (default == None):
             default = 0
