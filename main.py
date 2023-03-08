@@ -14,12 +14,11 @@ class App():
     max_col = 2
 
     def __init__(self):
-        self.json_file = 'templates/config-wb-mr6c.json'
+        # self.json_file = 'templates/config-wb-mr6c.json'
 
         # Создаём объекты для работы
         self.reader = wb_template_reader.WbTemplateReader()
         self.ui = ui_manager.UiManager()
-        self.load_template(self.json_file)
 
         # Подписываемся на события кнопок
         self.ui.btn_open_template.bind(
@@ -29,24 +28,21 @@ class App():
         self.ui.btn_write_params.bind(
             '<ButtonPress-1>', self.btn_write_params_click)
 
-        # Создаём контролы из параметров в шаблоне
+        self.ui.write_log(
+            'Откройте шаблон, настройте параметры подключения и нажмите кнопку «Читать параметры»')
+        self.ui.win.mainloop()
+
+    def load_template(self, filepath):
         try:
-            self.ui.write_log('Формирую интерфейс')
-            self.fill_window()
-            self.ui.write_log('Формирую интерфейс... OK')
+            self.ui.write_log('Загружаю шаблон {}'.format(filepath))
+            self.reader.read_template(filepath)
+            self.ui.write_log('Получаю группы')
+            self.groups = self.reader.get_groups()
+            self.ui.write_log('Получаю список параметров')
+            self.params = self.reader.get_parameters()
         except Exception as e:
             self.ui.write_log('Ошибка:')
             self.ui.write_log(traceback.format_exc())
-
-        self.ui.win.mainloop()
-
-    def load_template(self, json_file):
-        self.ui.write_log('Загружаю шаблон')
-        self.reader.read_template(json_file)
-        self.ui.write_log('Получаю группы')
-        self.groups = self.reader.get_groups()
-        self.ui.write_log('Получаю список параметров')
-        self.params = self.reader.get_parameters()
 
     def is_main_group(self, item):
         return 'group' not in item
@@ -120,7 +116,17 @@ class App():
                         min_, max_, value_type, default, width=20, description=True, anchor=NW)
 
     def btn_open_template_click(self, event):
-        print('btn_open_template')
+        filepath = self.ui.open_file()
+        if (len(filepath) > 0):
+            # Создаём контролы из параметров в шаблоне
+            self.load_template(filepath)
+            try:
+                self.ui.write_log('Формирую интерфейс')
+                self.fill_window()
+                print(self.ui.btn_open_template.state())
+            except Exception as e:
+                self.ui.write_log('Ошибка:')
+                self.ui.write_log(traceback.format_exc())
 
     def btn_read_params_click(self, event):
         print('btn_read_params')

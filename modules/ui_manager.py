@@ -43,7 +43,7 @@ class UiManager:
             title='Настройки подключения',
             side=LEFT,
             fill=BOTH,
-            expand=True
+            expand=False
         )
 
         mb_port = self.create_combobox(
@@ -134,7 +134,7 @@ class UiManager:
         self.btn_read_params = self.create_button(
             parent=mb_actions,
             id='btn_read_params',
-            title='Читать настройки',
+            title='Читать параметры',
             side=LEFT,
             anchor=SW
         )
@@ -142,7 +142,7 @@ class UiManager:
         self.btn_write_params = self.create_button(
             parent=mb_actions,
             id='btn_write_params',
-            title='Записать настройки',
+            title='Записать параметры',
             side=LEFT,
             anchor=SW
         )
