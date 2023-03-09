@@ -191,6 +191,7 @@ class App():
 
     def read_parameters(self, slave_id):
         self.mb.ui = self.ui
+        fatal_error = False
         for key in self.params:
             items = self.params.get(key)
             reg_type = items['reg_type']
@@ -200,6 +201,7 @@ class App():
                 if (value != 'error'):
                     errors_cnt += 1
                     if (value == 'fatal_error'):
+                        fatal_error = True
                         break
                     widget = self.ui.widgets[key]
                     value = value[0]
@@ -217,9 +219,15 @@ class App():
                             widget.current(index)
                 else:
                     self.ui.widget_hide(key)
-        if (errors_cnt > 0):
+        if (fatal_error):
+            self.ui.write_log(
+                'При чтении было слишком много ошибок. Возможно, устройство не подключено, неверно выбраны параметры подключения или шаблон.')
+            return False
+        if (errors_cnt > 0 and not fatal_error):
             self.ui.write_log(
                 'Некоторые регистры не были прочитаны. Возможно, их нет в этой версии прошивки устройства. Отсутствующие параметры были скрыты из редактора.')
+
+        return True
 
     def btn_read_params_click(self, event):
         try:
@@ -229,11 +237,11 @@ class App():
 
             slave_id = int(mb_params['slave_id'])
             self.mb.connect()
-            self.read_parameters(slave_id)
-            self.widgets_hide_by_condition()
+            if (self.read_parameters(slave_id)):
+                self.widgets_hide_by_condition()
 
-            self.mb.disconnect()
-            self.ui.write_log('Прочитал, можно вносить изменения.')
+                self.mb.disconnect()
+                self.ui.write_log('Прочитал, можно вносить изменения.')
         except Exception as e:
             self.ui.write_log('Ошибка:')
             self.ui.write_log(traceback.format_exc())

@@ -1,17 +1,14 @@
-from tkinter import *
 
-tk = Tk()
-tk.withdraw()
-
-d = DoubleVar(master=tk, value=0)
+import time
+from threading import Thread
 
 
-def my_event_handler(*args):
-    amount = "{:.2f}".format(d.get())
-    print("$"+amount)
+def sleepMe(i):
+    print("Поток %i засыпает на 5 секунд.\n" % i)
+    time.sleep(5)
+    print("Поток %i сейчас проснулся.\n" % i)
 
 
-d.trace(mode="w", callback=my_event_handler)
-
-d.set(5.55)
-d.set(15.12)
+for i in range(10):
+    th = Thread(target=sleepMe, args=(i, ))
+    th.start()
