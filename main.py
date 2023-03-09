@@ -197,12 +197,9 @@ class App():
             reg_type = items['reg_type']
             errors_cnt = 0
             if (reg_type == 'holding'):
-                value = self.mb.read_holding(slave_id, items['address'])
-                if (value != 'error'):
-                    errors_cnt += 1
-                    if (value == 'fatal_error'):
-                        fatal_error = True
-                        break
+
+                try:
+                    value = self.mb.read_holding(slave_id, items['address'])
                     widget = self.ui.widgets[key]
                     value = value[0]
                     if (widget.type == 'spinbox'):
@@ -217,25 +214,27 @@ class App():
                             dic = widget.dic
                             index = dic['enum'].index(value)
                             widget.current(index)
-                else:
-                    self.ui.widget_hide(key)
-        if (fatal_error):
-            self.ui.write_log(
-                'При чтении было слишком много ошибок. Возможно, устройство не подключено, неверно выбраны параметры подключения или шаблон.')
-            return False
-        if (errors_cnt > 0 and not fatal_error):
-            self.ui.write_log(
-                'Некоторые регистры не были прочитаны. Возможно, их нет в этой версии прошивки устройства. Отсутствующие параметры были скрыты из редактора.')
-
-        return True
+                except Exception as e:
+                    msg = '%s' % e
+                    if ('ExceptionResponse' in msg):
+                        self.ui.write_log(
+                            'Не смог прочитать регистр {}, параметр будет недоступен.'.format(items['address']))
+                        # self.ui.widget_hide(key)
+                        self.ui.widgets[key].config(state='disable')
+                    else:
+                        if ('ModbusIOException' in msg):
+                            self.ui.write_log(
+                                'Не смог подключиться к устройству.')
+                        break
 
     def btn_read_params_click(self, event):
         try:
-            self.ui.write_log('Читаю регистры устройства.')
             mb_params = self.ui.get_modbus_params()
             self.mb.init(mb_params)
-
             slave_id = int(mb_params['slave_id'])
+
+            self.ui.write_log('Читаю регистры устройства {}.'.format(slave_id))
+
             self.mb.connect()
             if (self.read_parameters(slave_id)):
                 self.widgets_hide_by_condition()
@@ -243,8 +242,8 @@ class App():
                 self.mb.disconnect()
                 self.ui.write_log('Прочитал, можно вносить изменения.')
         except Exception as e:
-            self.ui.write_log('Ошибка:')
-            self.ui.write_log(traceback.format_exc())
+            self.ui.write_log(e)
+            # self.ui.write_log(traceback.format_exc())
 
 # Запись параметров в устройство
     def write_parameters(self, slave_id):
@@ -260,18 +259,18 @@ class App():
 
     def btn_write_params_click(self, event):
         try:
-            self.ui.write_log('Пишу параметры устройства.')
             mb_params = self.ui.get_modbus_params()
             self.mb.init(mb_params)
-
             slave_id = int(mb_params['slave_id'])
+
+            self.ui.write_log('Пишу параметры устройства {}.'.format(slave_id))
+
             self.mb.connect()
             self.write_parameters(slave_id)
             self.mb.disconnect()
             self.ui.write_log('Записал.')
         except Exception as e:
-            self.ui.write_log('Ошибка:')
-            self.ui.write_log(traceback.format_exc())
+            self.ui.write_log(e)
 
 
 app = App()

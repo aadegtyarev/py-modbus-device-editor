@@ -25,7 +25,7 @@ class UiManager:
         self.win.geometry('1366x750')
 
         style = ttk.Style(self.win)
-        style.theme_use("clam")
+        style.theme_use('clam')
 
 # Верхняя часть окна с настройками подключения
         top_frame = self.create_frame(
@@ -115,7 +115,7 @@ class UiManager:
             id='nodel_mb_slave_id',
             title='Адрес',
             min_=0,
-            max_=247,
+            max_=255,
             value_type='int',
             default=1,
             width=4,
@@ -287,13 +287,14 @@ class UiManager:
     def create_combobox(self, parent, id, title, dic, default, width, **opts):
         enums = dic['enum_titles']
         group = self.create_group(
-            parent, id+'title', title, relief=FLAT, **opts)
+            parent, id+'_title', title, relief=FLAT, **opts)
         combobox = ttk.Combobox(group, values=enums,
                                 state="readonly", width=width)
         combobox.type = 'combobox'
         combobox.dic = dic
         combobox.pack(padx=5, pady=0, side=TOP, anchor=NW)
         combobox.pack_info = self.get_pack_info(combobox)
+        # combobox.config(disabledbackground="red")
         self.widgets[id] = combobox
 
         if (default in dic['enum']):
@@ -323,7 +324,7 @@ class UiManager:
         fmt = self.get_combobox_format(value_type)
 
         group = self.create_group(
-            parent, id+'title', title, relief=FLAT, **opts)
+            parent, id+'_title', title, relief=FLAT, **opts)
         spinbox = ttk.Spinbox(group, from_=min_, to=max_,
                               format=fmt, width=width)
 
@@ -390,8 +391,17 @@ class UiManager:
         }
 
     def widget_hide(self, widget_id):
-        widget = self.widgets[widget_id]
-        widget.pack_forget()
+        widget = self.widgets.get(widget_id)
+        if (widget != None):
+            widget.pack_forget()
+
+        widget = self.widgets.get(widget_id+'_title')
+        if (widget != None):
+            widget.pack_forget()
+
+        widget = self.widgets.get(widget_id+'_decsription')
+        if (widget != None):
+            widget.pack_forget()
 
     def widget_show(self, widget_id):
         widget = self.widgets[widget_id]
