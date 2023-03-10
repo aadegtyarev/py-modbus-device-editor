@@ -46,14 +46,6 @@ class UiManager:
             expand=False,
         )
 
-        self.btn_update_port_list = self.create_button(
-            parent=mb_settings,
-            id="nodel_btn_update_port_list",
-            title="Обновить",
-            side=LEFT,
-            anchor=SW,
-        )
-
         mb_port = self.create_combobox(
             parent=mb_settings,
             id="nodel_mb_port",
@@ -64,7 +56,7 @@ class UiManager:
             side=LEFT,
             anchor=SW,
         )
-        
+
         mb_baudrate = self.create_combobox(
             parent=mb_settings,
             id="nodel_mb_baudrate",
@@ -364,6 +356,11 @@ class UiManager:
             widget_type="spinbox",
             widget_opts={"padx": 5, "pady": 0, "side": TOP, "anchor": NW},
         )
+        # spinbox.type = "spinbox"
+        # spinbox.pack(padx=5, pady=0, side=TOP, anchor=NW)
+        # spinbox.pack_info = self.get_pack_info(spinbox)
+        # self.widgets[id] = spinbox
+
         if description:
             self.create_label(
                 group,
