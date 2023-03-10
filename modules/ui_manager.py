@@ -407,6 +407,10 @@ class UiManager:
         widget = self.widgets[widget_id]
         widget.pack(widget.pack_info)
 
+    def widget_disabled(self, widget_id):
+        widget = self.widgets[widget_id]
+        widget.config(state='disable')
+
     def open_file(self):
         file_patch = filedialog.askopenfilename()
         return file_patch

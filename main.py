@@ -220,7 +220,8 @@ class App():
                         self.ui.write_log(
                             'Не смог прочитать регистр {}, параметр будет недоступен.'.format(items['address']))
                         # self.ui.widget_hide(key)
-                        self.ui.widgets[key].config(state='disable')
+                        self.ui.widget_disabled(key)
+                        # self.ui.widgets[key].config(state='disable')
                     else:
                         if ('ModbusIOException' in msg):
                             self.ui.write_log(
@@ -243,10 +244,11 @@ class App():
                 self.ui.write_log('Прочитал, можно вносить изменения.')
         except Exception as e:
             self.ui.write_log(e)
-            # self.ui.write_log(traceback.format_exc())
+            # print(traceback.format_exc())
 
 # Запись параметров в устройство
     def write_parameters(self, slave_id):
+
         for key in self.params:
             items = self.params.get(key)
             reg_type = items['reg_type']
@@ -254,8 +256,19 @@ class App():
                 value = self.ui.get_value(key)
                 if ('scale' in items):
                     value = value/items['scale']
-                value = self.mb.write_holding(
-                    slave_id, items['address'], value)
+                    try:
+                        value = self.mb.write_holding(
+                            slave_id, items['address'], value)
+                    except Exception as e:
+                        msg = '%s' % e
+                        if ('IllegalValue' in msg):
+                            self.ui.write_log(
+                                'Не смог записать регистр {}.'.format(items['address']))
+                        else:
+                            if ('Message' in msg):
+                                self.ui.write_log(
+                                    'Не смог подключиться к устройству.')
+                            break
 
     def btn_write_params_click(self, event):
         try:
