@@ -441,6 +441,14 @@ class UiManager:
         widget = self.widgets[widget_id]
         widget.pack(widget.pack_info)
 
+        widget = self.widgets.get(widget_id + "_title")
+        if widget != None:
+            widget.pack(widget.pack_info)
+
+        widget = self.widgets.get(widget_id + "_decsription")
+        if widget != None:
+            widget.pack(widget.pack_info)
+
     def widget_disable(self, widget_id):
         widget = self.widgets[widget_id]
         widget.config(state="disable")

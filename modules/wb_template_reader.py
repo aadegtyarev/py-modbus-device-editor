@@ -1,5 +1,6 @@
 import json
 import re
+import traceback
 
 
 class WbTemplateReader:
@@ -17,8 +18,17 @@ class WbTemplateReader:
     def get_device_id(self):
         return self.wb_template["device"]["id"]
 
+    def convert_params(self, params):
+        dic = {}
+        for i in range(len(params)):
+            dic[params[i]["id"]] = params[i]
+        return dic
+
     def get_parameters(self):
-        return self.wb_template["device"]["parameters"]
+        params = self.wb_template["device"]["parameters"]
+        if type(params) != dict:
+            params = self.convert_params(params)
+        return params
 
     def get_groups(self):
         return self.wb_template["device"]["groups"]
