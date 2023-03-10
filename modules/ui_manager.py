@@ -378,15 +378,17 @@ class UiManager:
 
     def get_value(self, widget_id):
         widget = self.widgets[widget_id]
+        if("disabled" not in widget.state()):
+            if widget.type == "spinbox":
+                return widget.get()
 
-        if widget.type == "spinbox":
-            return widget.get()
-
-        if widget.type == "combobox":
-            dic = widget.dic
-            value = widget.get()
-            index = dic["enum_titles"].index(value)
-            return dic["enum"][index]
+            if widget.type == "combobox":
+                dic = widget.dic
+                value = widget.get()
+                index = dic["enum_titles"].index(value)
+                return dic["enum"][index]
+        else:
+            return None
 
     def get_values(self):
         widgets = self.widgets
@@ -439,7 +441,7 @@ class UiManager:
         widget = self.widgets[widget_id]
         widget.pack(widget.pack_info)
 
-    def widget_disabled(self, widget_id):
+    def widget_disable(self, widget_id):
         widget = self.widgets[widget_id]
         widget.config(state="disable")
 

@@ -12,7 +12,9 @@ class App:
     mb = None
     groups = {}
     params = {}
-    max_col = 2 #количество колонок с виджетами +1
+    max_col = 2  # количество колонок с виджетами +1
+    reg_errors_count = 0
+    reg_count = 0
 
     def __init__(self):
         # Создаём объекты для работы
@@ -40,7 +42,7 @@ class App:
             device_name = self.reader.get_device_name()
             self.ui.write_log("=== {} ===".format(device_name))
             self.ui.write_log(
-                "В шаблоне {} {}".format(
+                "В шаблоне {} {}.".format(
                     len(self.params),
                     self.numeral_noun_declension(
                         len(self.params), "параметр", "параметра", "параметров"
@@ -103,7 +105,7 @@ class App:
                                 parent.curr_col = 0
                                 parent.curr_row += 1
                 else:
-                    print("Не нашёл контрол {}".format(parent_id))
+                    print("Не нашёл контрол {}.".format(parent_id))
 
             # Запрашиваем параметры, у которых одна группа
             parameters = self.get_params_by_group(id_group)
@@ -206,14 +208,16 @@ class App:
 
     def read_parameters(self, slave_id):
         self.mb.ui = self.ui
-        fatal_error = False
+        self.errors_count = 0
+        self.reg_count = 0
+
         for key in self.params:
             items = self.params.get(key)
             reg_type = items["reg_type"]
-            errors_cnt = 0
             if reg_type == "holding":
                 try:
                     value = self.mb.read_holding(slave_id, items["address"])
+                    self.reg_count += 1
                     widget = self.ui.get_widget(key)
                     value = value[0]
                     if widget.type == "spinbox":
@@ -231,12 +235,11 @@ class App:
                 except Exception as e:
                     msg = "%s" % e
                     if "ExceptionResponse" in msg:
+                        self.errors_count += 1
                         self.ui.write_log(
-                            "Не смог прочитать регистр {}, параметр будет недоступен.".format(
-                                items["address"]
-                            )
+                            "Регистр {} не читается.".format(items["address"])
                         )
-                        self.ui.widget_disabled(key)
+                        self.ui.widget_disable(key)
                     else:
                         if "ModbusIOException" in msg:
                             self.ui.write_log(
@@ -253,10 +256,21 @@ class App:
             self.ui.write_log("Читаю регистры устройства {}.".format(slave_id))
 
             self.mb.connect()
-            if self.read_parameters(slave_id):
-                self.widgets_hide_by_condition()
+            self.read_parameters(slave_id)
+            self.widgets_hide_by_condition()
 
-                self.mb.disconnect()
+            self.mb.disconnect()
+            if self.errors_count > 0:
+                self.ui.write_log(
+                    "Прочитал из устройства {} {}. Не смог прочитать {}, они будут недоступны для редактирования.".format(
+                        self.reg_count,
+                        self.numeral_noun_declension(
+                            self.reg_count, "параметр", "параметра", "параметров"
+                        ),
+                        self.errors_count,
+                    )
+                )
+            else:
                 self.ui.write_log("Прочитал, можно вносить изменения.")
         except Exception as e:
             self.ui.write_log(e)
@@ -264,24 +278,29 @@ class App:
 
     # Запись параметров в устройство
     def write_parameters(self, slave_id):
+        self.reg_errors_count = 0
+        self.reg_count = 0
         for key in self.params:
             items = self.params.get(key)
             if items["reg_type"] == "holding":
                 value = self.ui.get_value(key)
-                if "scale" in items:
-                    value = value / items["scale"]
-                try:
-                    value = self.mb.write_holding(slave_id, items["address"], value)
-                except Exception as e:
-                    msg = "%s" % e
-                    if "IllegalValue" in msg:
-                        self.ui.write_log(
-                            "Не смог записать регистр {}.".format(items["address"])
-                        )
-                    else:
-                        if "Message" in msg:
-                            self.ui.write_log("Не смог подключиться к устройству.")
-                        break
+                if value != None:
+                    if "scale" in items:
+                        value = value / items["scale"]
+                    try:
+                        value = self.mb.write_holding(slave_id, items["address"], value)
+                        self.reg_count += 1
+                    except Exception as e:
+                        msg = "%s" % e
+                        if "IllegalValue" in msg:
+                            self.reg_errors_count += 1
+                            self.ui.write_log(
+                                "Регистр {} не записывается.".format(items["address"])
+                            )
+                        else:
+                            if "Message" in msg:
+                                self.ui.write_log("Не смог подключиться к устройству.")
+                            break
 
     def btn_write_params_click(self, event):
         try:
@@ -294,7 +313,15 @@ class App:
             self.mb.connect()
             self.write_parameters(slave_id)
             self.mb.disconnect()
-            self.ui.write_log("Записал.")
+            self.ui.write_log(
+                "Записал {} {}. Не смог записать {}.".format(
+                    self.reg_count,
+                    self.numeral_noun_declension(
+                        self.reg_count, "параметр", "параметра", "параметров"
+                    ),
+                    self.reg_errors_count,
+                )
+            )
         except Exception as e:
             self.ui.write_log(e)
 
