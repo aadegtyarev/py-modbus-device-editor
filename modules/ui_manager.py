@@ -46,6 +46,14 @@ class UiManager:
             expand=False,
         )
 
+        self.btn_update_port_list = self.create_button(
+            parent=mb_settings,
+            id="nodel_btn_update_port_list",
+            title="Обновить",
+            side=LEFT,
+            anchor=SW,
+        )
+
         mb_port = self.create_combobox(
             parent=mb_settings,
             id="nodel_mb_port",
@@ -56,7 +64,7 @@ class UiManager:
             side=LEFT,
             anchor=SW,
         )
-
+        
         mb_baudrate = self.create_combobox(
             parent=mb_settings,
             id="nodel_mb_baudrate",
@@ -189,6 +197,12 @@ class UiManager:
         )
         self.log.configure(state="disabled")
 
+    def _widget_commit(self, widget, widget_id, widget_type, widget_opts):
+        widget.pack(widget_opts)
+        widget.pack_info = self.get_pack_info(widget)
+        widget.type = widget_type
+        self.widgets[widget_id] = widget
+
     def write_log(self, text):
         self.log.configure(state="normal")
         res = self.log.insert(
@@ -249,46 +263,55 @@ class UiManager:
 
     def create_scrolled_text(self, parent, id, width, **opts):
         scrolled_text = scrolltext.ScrolledText(parent, width=width, wrap="word")
-        scrolled_text.pack(**opts)
-        scrolled_text.pack_info = self.get_pack_info(scrolled_text)
-        scrolled_text.type = "scrolled_text"
-        self.widgets[id] = scrolled_text
+        self._widget_commit(
+            widget=scrolled_text,
+            widget_id=id,
+            widget_type="scrolled_text",
+            widget_opts=opts,
+        )
         return scrolled_text
 
     def create_group(self, parent, id, title, relief=GROOVE, **opts):
         group = ttk.LabelFrame(parent, text=title, relief=relief)
-        group.type = "group"
-        group.pack(padx=5, pady=5, **opts)
-        group.pack_info = self.get_pack_info(group)
-        self.widgets[id] = group
+        self._widget_commit(
+            widget=group,
+            widget_id=id,
+            widget_type="group",
+            widget_opts={"padx": 5, "pady": 5, **opts},
+        )
         return group
 
     def create_label(self, parent, id, title, **opts):
         label = ttk.Label(parent, text=title)
-        label.type = "label"
-        label.pack(padx=5, pady=5, **opts)
-        label.pack_info = self.get_pack_info(label)
-        self.widgets[id] = label
+        self._widget_commit(
+            widget=label,
+            widget_id=id,
+            widget_type="label",
+            widget_opts={"padx": 5, "pady": 5, **opts},
+        )
         return label
 
     def create_button(self, parent, id, title, command=None, **opts):
         button = ttk.Button(parent, text=title, command=command)
-        button.type = "button"
-        button.pack(padx=5, pady=5, **opts)
-        button.pack_info = self.get_pack_info(button)
-        self.widgets[id] = button
+        self._widget_commit(
+            widget=button,
+            widget_id=id,
+            widget_type="button",
+            widget_opts={"padx": 5, "pady": 5, **opts},
+        )
         return button
 
     def create_combobox(self, parent, id, title, dic, default, width, **opts):
         enums = dic["enum_titles"]
         group = self.create_group(parent, id + "_title", title, relief=FLAT, **opts)
         combobox = ttk.Combobox(group, values=enums, state="readonly", width=width)
-        combobox.type = "combobox"
         combobox.dic = dic
-        combobox.pack(padx=5, pady=0, side=TOP, anchor=NW)
-        combobox.pack_info = self.get_pack_info(combobox)
-        # combobox.config(disabledbackground="red")
-        self.widgets[id] = combobox
+        self._widget_commit(
+            widget=combobox,
+            widget_id=id,
+            widget_type="combobox",
+            widget_opts={"padx": 5, "pady": 0, "side": TOP, "anchor": NW},
+        )
 
         if default in dic["enum"]:
             index = dic["enum"].index(default)
@@ -335,12 +358,12 @@ class UiManager:
             default = 0
         spinbox.set(default)
 
-        spinbox.type = "spinbox"
-        # spinbox.opts = {'padx'=5, 'pady'=0, 'side'=TOP, 'anchor'=NW}
-        spinbox.pack(padx=5, pady=0, side=TOP, anchor=NW)
-        spinbox.pack_info = self.get_pack_info(spinbox)
-        self.widgets[id] = spinbox
-
+        self._widget_commit(
+            widget=spinbox,
+            widget_id=id,
+            widget_type="spinbox",
+            widget_opts={"padx": 5, "pady": 0, "side": TOP, "anchor": NW},
+        )
         if description:
             self.create_label(
                 group,

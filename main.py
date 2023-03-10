@@ -12,7 +12,7 @@ class App:
     mb = None
     groups = {}
     params = {}
-    max_col = 2
+    max_col = 2 #количество колонок с виджетами +1
 
     def __init__(self):
         # Создаём объекты для работы
@@ -48,7 +48,7 @@ class App:
                 )
             )
             self.ui.get_widget("nodel_left_frame").config(
-                text="Настройки устройства {}".format(device_name)
+                text="Настройки {}".format(device_name)
             )
             return True
         except Exception as e:
@@ -239,7 +239,9 @@ class App:
                         self.ui.widget_disabled(key)
                     else:
                         if "ModbusIOException" in msg:
-                            self.ui.write_log("Не смог подключиться к устройству.")
+                            self.ui.write_log(
+                                "Не смог подключиться к устройству. Проверьте настройки подключения."
+                            )
                         break
 
     def btn_read_params_click(self, event):
