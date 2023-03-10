@@ -125,6 +125,7 @@ class App:
                     param_widget = self.ui.create_combobox(
                         group_widget, key, title, dic, default, width=40, anchor=NW
                     )
+                    param_widget.bind("<<ComboboxSelected>>", self.combobox_selected)
                 else:
                     default = item.get("default")
                     min_ = item.get("min")
@@ -161,6 +162,10 @@ class App:
             and genetive_singular
             or nominative_plural
         )
+
+    # когда меняем значение параметра-комбобокса — показывает или скрываем другие
+    def combobox_selected(self, event):
+        self.widgets_hide_by_condition()
 
     def widgets_hide_by_condition(self):
         values = self.ui.get_values()
