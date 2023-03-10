@@ -4,19 +4,18 @@ from pymodbus.client import ModbusSerialClient
 from . import ui_manager
 
 
-class ModbusRTUClient ():
+class ModbusRTUClient:
     client = None
     errors_count = 0
     max_errors = 5
 
     def init(self, mb_params):
-
         self.client = ModbusSerialClient(
-            port=mb_params['port'],
-            baudrate=mb_params['baudrate'],
-            bytesize=mb_params['bytesize'],
-            parity=mb_params['parity'],
-            stopbits=mb_params['stopbits']
+            port=mb_params["port"],
+            baudrate=mb_params["baudrate"],
+            bytesize=mb_params["bytesize"],
+            parity=mb_params["parity"],
+            stopbits=mb_params["stopbits"],
         )
 
     def connect(self):
@@ -28,27 +27,29 @@ class ModbusRTUClient ():
     def read_holding(self, slave_id, reg_address):
         try:
             data = self.client.read_holding_registers(
-                address=reg_address, slave=slave_id)
+                address=reg_address, slave=slave_id
+            )
             value = data.registers
         except Exception as e:
-            msg = '%s' % e.args
-            if ('ModbusIOException' in msg):
-                raise Exception('ModbusIOException')
-            if ('ExceptionResponse' in msg):
-                raise Exception('ExceptionResponse')
+            msg = "%s" % e.args
+            if "ModbusIOException" in msg:
+                raise Exception("ModbusIOException")
+            if "ExceptionResponse" in msg:
+                raise Exception("ExceptionResponse")
 
         return value
 
     def write_holding(self, slave_id, reg_address, value):
         try:
             res = self.client.write_register(
-                address=reg_address, slave=slave_id, value=int(value))
+                address=reg_address, slave=slave_id, value=int(value)
+            )
 
-            if ('IllegalValue' in '%s' % res):
-                raise Exception('IllegalValue')
-            if ('Invalid Message' in '%s' % res):
-                raise Exception('Invalid Message')
+            if "IllegalValue" in "%s" % res:
+                raise Exception("IllegalValue")
+            if "Invalid Message" in "%s" % res:
+                raise Exception("Invalid Message")
         except Exception as e:
             raise Exception(e)
 
-        return ('WriteRegisterResponse' in '%s' % res)
+        return "WriteRegisterResponse" in "%s" % res
