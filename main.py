@@ -41,8 +41,9 @@ class App():
             self.ui.write_log('Получаю список параметров.')
             self.params = self.reader.get_parameters()
 
+            device_name = self.reader.get_device_name()
             self.ui.write_log('=== {} ==='.format(
-                self.reader.get_device_name()))
+                device_name))
             self.ui.write_log(
                 'В шаблоне {} {}'.format(
                     len(self.params),
@@ -54,6 +55,8 @@ class App():
                     )
                 )
             )
+            self.ui.get_widget('nodel_left_frame').config(
+                text='Настройки устройства {}'.format(device_name))
             return True
         except Exception as e:
             self.ui.write_log('Ошибка:')
@@ -81,7 +84,7 @@ class App():
                 curr_frame = group_widget.curr_frame
             else:
                 parent_id = item['group']
-                parent = self.ui.widgets[parent_id]
+                parent = self.ui.get_widget(parent_id)
                 if (parent != None):
                     # print('[parent_id: {} ] curr_row: {} curr_col: {}  title: {}'.format
                     #       (parent_id, parent.curr_row, parent.curr_col, title))
@@ -153,7 +156,7 @@ class App():
 
     def widgets_hide_by_condition(self):
         values = self.ui.get_values()
-        widgets = self.ui.widgets
+        widgets = self.ui.get_widgets()
 
         for key in widgets:
             item = widgets[key]
@@ -200,15 +203,15 @@ class App():
 
                 try:
                     value = self.mb.read_holding(slave_id, items['address'])
-                    widget = self.ui.widgets[key]
+                    widget = self.ui.get_widget(key)
                     value = value[0]
                     if (widget.type == 'spinbox'):
                         if ('scale' in items):
                             scale = items['scale']
                             value = value*scale
-                            self.ui.widgets[key].set(value)
+                            widget.set(value)
                         else:
-                            self.ui.widgets[key].set(value)
+                            widget.set(value)
                     else:
                         if (widget.type == 'combobox'):
                             dic = widget.dic
@@ -219,9 +222,7 @@ class App():
                     if ('ExceptionResponse' in msg):
                         self.ui.write_log(
                             'Не смог прочитать регистр {}, параметр будет недоступен.'.format(items['address']))
-                        # self.ui.widget_hide(key)
                         self.ui.widget_disabled(key)
-                        # self.ui.widgets[key].config(state='disable')
                     else:
                         if ('ModbusIOException' in msg):
                             self.ui.write_log(
@@ -251,24 +252,23 @@ class App():
 
         for key in self.params:
             items = self.params.get(key)
-            reg_type = items['reg_type']
-            if (reg_type == 'holding'):
+            if (items['reg_type'] == 'holding'):
                 value = self.ui.get_value(key)
                 if ('scale' in items):
                     value = value/items['scale']
-                    try:
-                        value = self.mb.write_holding(
-                            slave_id, items['address'], value)
-                    except Exception as e:
-                        msg = '%s' % e
-                        if ('IllegalValue' in msg):
+                try:
+                    value = self.mb.write_holding(
+                        slave_id, items['address'], value)
+                except Exception as e:
+                    msg = '%s' % e
+                    if ('IllegalValue' in msg):
+                        self.ui.write_log(
+                            'Не смог записать регистр {}.'.format(items['address']))
+                    else:
+                        if ('Message' in msg):
                             self.ui.write_log(
-                                'Не смог записать регистр {}.'.format(items['address']))
-                        else:
-                            if ('Message' in msg):
-                                self.ui.write_log(
-                                    'Не смог подключиться к устройству.')
-                            break
+                                'Не смог подключиться к устройству.')
+                        break
 
     def btn_write_params_click(self, event):
         try:

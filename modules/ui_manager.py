@@ -350,6 +350,9 @@ class UiManager:
     def is_exists_widget(self, id):
         return (widgets.get(id) != None)
 
+    def set_value(self, widget_id, value):
+        self.widgets[widget_id].set(value)
+
     def get_value(self, widget_id):
         widget = self.widgets[widget_id]
 
@@ -389,6 +392,12 @@ class UiManager:
             'stopbits': self.get_value('nodel_mb_stopbits'),
             'slave_id': self.get_value('nodel_mb_slave_id')
         }
+
+    def get_widget(self, widget_id):
+        return self.widgets.get(widget_id)
+
+    def get_widgets(self):
+        return self.widgets
 
     def widget_hide(self, widget_id):
         widget = self.widgets.get(widget_id)
