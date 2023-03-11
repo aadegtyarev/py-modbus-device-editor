@@ -64,7 +64,7 @@ class App:
     def get_params_by_group(self, id):
         res = {}
         for key in self.params:
-            if self.params[key]["group"] == id:
+            if self.params[key].get("group") == id:
                 res[key] = self.params[key]
         return res
 
