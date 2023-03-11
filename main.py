@@ -68,6 +68,61 @@ class App:
                 res[key] = self.params[key]
         return res
 
+    def get_params_without_group(self):
+        res = {}
+        for key in self.params:
+            if self.params[key].get("group") == None:
+                res[key] = self.params[key]
+        return res
+
+    def create_widget(self, group_widget, param_id, param_item):
+        condition = param_item.get("condition")
+        title = self.reader.get_translate(param_item["title"])
+        group_widget.condition = condition
+        if group_widget.type == "tab":
+            group_widget = group_widget.child_wrap
+        param_type = self.reader.get_parameter_type(param_item)
+
+        if param_type == "enum":
+            default = param_item["default"]
+            dic = self.reader.get_enum_dic(param_item)
+            param_widget = self.ui.create_combobox(
+                group_widget, param_id, title, dic, default, width=40, anchor=NW
+            )
+        else:
+            default = param_item.get("default")
+            min_ = param_item.get("min")
+            max_ = param_item.get("max")
+            if "scale" in param_item:
+                value_type = "double"
+            else:
+                value_type = "inc"
+
+            param_widget = self.ui.create_spinbox(
+                group_widget,
+                param_id,
+                title,
+                min_,
+                max_,
+                value_type,
+                default,
+                width=20,
+                description=True,
+                anchor=NW,
+            )
+        param_widget.condition = condition
+
+    def fill_window_params_without_group(self):
+        params_without_group = self.get_params_without_group()
+
+        if len(params_without_group) > 0:
+            group_widget = self.ui.create_tab("mode_params_group", "Режим")
+            curr_frame = group_widget.curr_frame
+
+            for key in params_without_group:
+                item = params_without_group[key]
+                self.create_widget(group_widget, key, item)
+
     def fill_window(self):
         # Перебираем группы и создаём для верхнего уровня табы, а для остальных — группы
         for item in self.groups:
@@ -112,42 +167,7 @@ class App:
             # Перебираем параметры с одной группой и создаём для них виджеты
             for key in parameters:
                 item = parameters[key]
-                condition = item.get("condition")
-                title = self.reader.get_translate(item["title"])
-                param_type = self.reader.get_parameter_type(item)
-                group_widget.condition = condition
-                if group_widget.type == "tab":
-                    group_widget = group_widget.child_wrap
-
-                if param_type == "enum":
-                    default = item["default"]
-                    dic = self.reader.get_enum_dic(item)
-                    param_widget = self.ui.create_combobox(
-                        group_widget, key, title, dic, default, width=40, anchor=NW
-                    )
-                    param_widget.bind("<<ComboboxSelected>>", self.combobox_selected)
-                else:
-                    default = item.get("default")
-                    min_ = item.get("min")
-                    max_ = item.get("max")
-                    if "scale" in item:
-                        value_type = "double"
-                    else:
-                        value_type = "inc"
-
-                    param_widget = self.ui.create_spinbox(
-                        group_widget,
-                        key,
-                        title,
-                        min_,
-                        max_,
-                        value_type,
-                        default,
-                        width=20,
-                        description=True,
-                        anchor=NW,
-                    )
-                param_widget.condition = condition
+                self.create_widget(group_widget, key, item)
 
     # взято из интернета: https://ru.stackoverflow.com/a/1413836
     def numeral_noun_declension(
@@ -199,7 +219,10 @@ class App:
             try:
                 if self.load_template(filepath):
                     self.ui.write_log("Формирую интерфейс редактора.")
-                    self.fill_window()
+
+                    self.fill_window_params_without_group()  # создаём виджеты для параметров без групп, например, режимов
+                    self.fill_window()  # создаём виджеты для остальных параметров
+
                     # Скрываем виджеты, которые не должны быть отображены
                     self.widgets_hide_by_condition()
                     self.ui.write_log(
