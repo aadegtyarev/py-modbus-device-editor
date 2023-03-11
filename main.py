@@ -89,6 +89,7 @@ class App:
             param_widget = self.ui.create_combobox(
                 group_widget, param_id, title, dic, default, width=40, anchor=NW
             )
+            param_widget.bind("<<ComboboxSelected>>", self.combobox_selected)           
         else:
             default = param_item.get("default")
             min_ = param_item.get("min")
