@@ -78,23 +78,31 @@ class App:
     def create_widget(self, group_widget, param_id, param_item):
         condition = param_item.get("condition")
         title = self.reader.get_translate(param_item["title"])
-        group_widget.condition = condition
+        group_widget.condition = (
+            condition  # по condition потом будем определять, надо ли показывать виджет
+        )
+        # если родительский виджет вкладка — дочерние добавляем в специальную группу,
+        # чтобы оно нормально упаковывалось на вкладке с другими группами
         if group_widget.type == "tab":
-            group_widget = group_widget.child_wrap
+            group_widget = group_widget.child_wrap  # а вот и наша группа-обёртка
         param_type = self.reader.get_parameter_type(param_item)
 
-        if param_type == "enum":
-            default = param_item["default"]
+        if param_type == "enum":  # если в параметре есть enum — создаём checkbox
+            default = param_item.get("default")
             dic = self.reader.get_enum_dic(param_item)
             param_widget = self.ui.create_combobox(
                 group_widget, param_id, title, dic, default, width=40, anchor=NW
             )
-            param_widget.bind("<<ComboboxSelected>>", self.combobox_selected)           
-        else:
+            param_widget.bind("<<ComboboxSelected>>", self.combobox_selected)
+        else:  # в остальных случаях это будет spinbox — поле ввода
+            # числа со стрелками и фиксированным диапазоном
+            # диапазон по умолчанию от 0 до 100.
             default = param_item.get("default")
             min_ = param_item.get("min")
             max_ = param_item.get("max")
-            if "scale" in param_item:
+            if (
+                "scale" in param_item
+            ):  # если в параметре есть scale, то говорим, то число будет десятичное
                 value_type = "double"
             else:
                 value_type = "inc"
@@ -111,15 +119,22 @@ class App:
                 description=True,
                 anchor=NW,
             )
+        # присваиваем созданому виджету condition,
+        # чтобы потом понимать — показывать его или нет
         param_widget.condition = condition
 
+    # иногда у параметров нет группы, для них мы
+    # создадим отдельную вкладку с именем «Режим»
     def fill_window_params_without_group(self):
         params_without_group = self.get_params_without_group()
 
-        if len(params_without_group) > 0:
+        if (
+            len(params_without_group) > 0
+        ):  # создаём вкладку только, если есть кого туда поместить
             group_widget = self.ui.create_tab("mode_params_group", "Режим")
             curr_frame = group_widget.curr_frame
 
+            # перебираем безгрупные параметры и создаём для них виджеты
             for key in params_without_group:
                 item = params_without_group[key]
                 self.create_widget(group_widget, key, item)
@@ -130,36 +145,44 @@ class App:
             title = self.reader.get_translate(item["title"])
             condition = item.get("condition")
             id_group = item["id"]
+
+            # если это группа верхнего уровня — создаём для неё вкладку
             if self.is_main_group(item):
                 group_widget = self.ui.create_tab(id_group, title)
                 curr_frame = group_widget.curr_frame
-            else:
+            else:  # для всех остальных группу с надписью, ещё такие виджеты называют LabalFrame/LabelBox
                 parent_id = item["group"]
                 parent = self.ui.get_widget(parent_id)
-                if parent != None:
-                    # print('[parent_id: {} ] curr_row: {} curr_col: {}  title: {}'.format
-                    #       (parent_id, parent.curr_row, parent.curr_col, title))
-                    if parent.type == "tab":
-                        if item.get("ui_options") == None:
-                            curr_frame = parent.curr_frame
-                            if parent.curr_col < self.max_col:
-                                group_widget = self.ui.create_group(
-                                    curr_frame, id_group, title, side=LEFT, anchor=NW
-                                )
+                if (
+                    parent != None
+                ):  # на всякий случай проверяем, что у группы есть родитель
+                    if parent.type == "tab":  # если родитель — вкладка, то
+                        curr_frame = parent.curr_frame
+                        if (
+                            parent.curr_col < self.max_col
+                        ):  # распределяем виджеты по колонкам
+                            if (
+                                item.get("ui_options") != None
+                            ):  # иногда встречаются группы без названий
+                                if item.get("ui_options")["wb"]["disable_title"]:
+                                    title = "Группа без названия"
 
-                                parent.curr_col += 1
-                            else:
-                                curr_frame = self.ui.create_row(
-                                    parent, parent_id + "_row"
-                                )
-                                parent.curr_frame = curr_frame
+                            group_widget = self.ui.create_group(
+                                curr_frame, id_group, title, side=LEFT, anchor=NW
+                            )
 
-                                group_widget = self.ui.create_group(
-                                    curr_frame, id_group, title, side=LEFT, anchor=NW
-                                )
+                            parent.curr_col += 1  # увеличиваем счётчик колонок
+                        else:
+                            # создаём новую строку на вкладке
+                            curr_frame = self.ui.create_row(parent, parent_id + "_row")
+                            parent.curr_frame = curr_frame
 
-                                parent.curr_col = 0
-                                parent.curr_row += 1
+                            group_widget = self.ui.create_group(
+                                curr_frame, id_group, title, side=LEFT, anchor=NW
+                            )
+
+                            parent.curr_col = 0  # устанавливаем первую колонку
+                            parent.curr_row += 1  # переводим каретку на новую строку
                 else:
                     print("Не нашёл контрол {}.".format(parent_id))
 
@@ -274,15 +297,16 @@ class App:
                             self.ui.write_log(
                                 "Не смог подключиться к устройству. Проверьте настройки подключения."
                             )
-                        break
+                        raise Exception("ModbusIOException")
 
     def btn_read_params_click(self, event):
         try:
             mb_params = self.ui.get_modbus_params()
             self.mb.init(mb_params)
             slave_id = int(mb_params["slave_id"])
+            device_name = self.reader.get_device_name()
 
-            self.ui.write_log("Читаю регистры устройства {}.".format(slave_id))
+            self.ui.write_log("Читаю регистры {} [{}].".format(device_name, slave_id))
 
             self.mb.connect()
             self.read_parameters(slave_id)
@@ -302,7 +326,9 @@ class App:
             else:
                 self.ui.write_log("Прочитал, можно вносить изменения.")
         except Exception as e:
-            self.ui.write_log(e)
+            msg = "%s" % e.args
+            if "ModbusIOException" not in msg:
+                self.ui.write_log(e)
             # print(traceback.format_exc())
 
     # Запись параметров в устройство
