@@ -82,8 +82,8 @@ class WbTemplateReader:
         return dic
 
     def calc_condition(self, condition, values):
-        condition = condition.replace("&&", "and")
-        condition = condition.replace("||", "or")
+        condition = condition.replace("&&", " and ")
+        condition = condition.replace("||", " or ")
         try:
             return eval(condition, {}, values)
         except Exception as e:
