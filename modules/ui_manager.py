@@ -26,6 +26,17 @@ class UiManager:
 
         style = ttk.Style(self.win)
         style.theme_use("clam")
+        style.theme_settings("clam", {
+        "TCombobox": {
+            "map": {
+                "background": [("active", "darkgray"),
+                                ("disabled", "darkgray")],
+                "fieldbackground": [("disabled", "gray")],
+                "foreground": [("focus", "black"),
+                                ("!disabled", "black")]
+            }
+        }
+        })
 
         # Верхняя часть окна с настройками подключения
         top_frame = self.create_frame(
