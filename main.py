@@ -11,7 +11,7 @@ class App:
     max_col = 2  # количество колонок с виджетами +1
 
     def __init__(self):
-        # Создаём объекты для работы
+        # создаём объекты для работы
         self.ui = ui_manager.UiManager()
         self.ui.btn_open_template.bind("<ButtonPress-1>", self.btn_open_template_click)
 
@@ -20,13 +20,17 @@ class App:
         self.ui.write_log("Настройте параметры подключения и откройте шаблон.")
         self.ui.win.mainloop()
 
+    # действие при нажатии на кнопку Открыть шаблон
     def btn_open_template_click(self, event):
         file_patch = self.ui.open_file()
         if len(file_patch) > 0:
+            # удаляем виджеты от предыдущего шаблона
             self.ui.delete_widgets()
 
             try:
+                # загружаем выбранный шаблон
                 if self.load_template(file_patch):
+                    # если всё ОК — рисуем интерфейс
                     self.create_interface()
 
             except Exception as e:
@@ -34,12 +38,17 @@ class App:
                 self.ui.write_log(traceback.format_exc())
 
     def create_interface(self):
+        # создаём вкладки из групп без поля group
         if self.create_pages():
-            self.create_groups()
+            # создаём группы внутри вкладок
+            if self.create_groups():
+                self.widgets_hide_by_condition()
 
+    # открываем шаблон
     def load_template(self, file_patch):
         self.ui.write_log("Открываю файл {}".format(file_patch))
         try:
+            # парсинг
             self.reader.read_template(file_patch)
             return True
         except Exception as e:
@@ -47,6 +56,7 @@ class App:
             self.ui.write_log(traceback.format_exc())
             return False
 
+    # создание страниц
     def create_pages(self):
         self.ui.write_log("Создаю вкладки.")
 
@@ -58,7 +68,7 @@ class App:
                 title = self.reader.get_translate(group.get("title"))
                 group_id = group.get("id")
                 # print(group)
-
+                # если у группы нет родителя, то создаём вкладку
                 if group.get("group") == None:
                     group_widget = self.ui.create_tab(group_id, title)
                     group_widget.condition = group.get("condition")
@@ -69,51 +79,69 @@ class App:
             self.ui.write_log(traceback.format_exc())
             return False
 
+    # создание групп
     def create_groups(self):
         self.ui.write_log("Создаю группы.")
 
         groups = self.reader.get_groups()
 
-        for i in range(len(groups)):
-            group = groups[i]
-            title = self.reader.get_translate(group.get("title"))
-            parent_id = group.get("group")
-            group_id = group.get("id")
-            parent = self.ui.get_widget(parent_id)
+        try:
+            for i in range(len(groups)):
+                group = groups[i]
+                title = self.reader.get_translate(group.get("title"))
+                parent_id = group.get("group")
+                group_id = group.get("id")
+                parent = self.ui.get_widget(parent_id)
 
-            if parent != None:
-                if parent.curr_col < self.max_col:
-                    curr_frame = self.get_current_frame(parent)
-                    parent.curr_col += 1
+                # а тут магия распределения групп по вкладкам
+                if parent != None: # если у группы нет родителя, то есть это у нас вкладка, то
+                    # проверяем, не вышли ли за пределы максимального числа колонок
+                    if parent.curr_col < self.max_col:
+                        # если не вышли, то получаем текущий фрейм (строку) и потом увеличиваем счётчик колонок
+                        curr_frame = self.get_current_frame(parent)
+                        parent.curr_col += 1
+                    else:
+                        # если счётчик колонок равен максимальном числу колонок на вкладке, то
+                        # создаём новую строку, обнуляем счётчик колонок и увеличиваем счётчик строк
+                        curr_frame = self.ui.create_row(parent, parent_id + "_row")
+                        parent.curr_frame = curr_frame
+                        parent.curr_col = 0
+                        parent.curr_row += 1
+
+                    # создаём новую группу с учётом магии выше
+                    group_widget = self.ui.create_group(
+                        curr_frame, group_id, title, side=LEFT, anchor=NW
+                    )
+                    # добавляем поле condition — это для того, чтобы понимать, надо ли показывать
+                    # эту группу при выбранных параметрах
+                    group_widget.condition = group.get("condition")
+                    # self.ui.create_label(group_widget, group_id, group_id)
                 else:
-                    curr_frame = self.ui.create_row(parent, parent_id + "_row")
-                    parent.curr_frame = curr_frame
-                    parent.curr_col = 0
-                    parent.curr_row += 1
+                    # а если родитель у группы есть, то получаем текущий виджет с нужным id
+                    group_widget = self.ui.get_widget(group_id)
 
-                group_widget = self.ui.create_group(
-                    curr_frame, group_id, title, side=LEFT, anchor=NW
-                )
-                group_widget.condition = group.get("condition")
-                # self.ui.create_label(group_widget, group_id, group_id)
-            else:
-                group_widget = self.ui.get_widget(group_id)
-
-            if group_widget != None:                
-                self.create_params(group_id, group_widget)
+                # если виджет группы существует — создаём параметры в ней
+                if group_widget != None:                
+                    self.create_params(group_id, group_widget)
+                else:
+                    print("Виджет для группы {} не существует".format(group_id))
+            return True
+        except Exception as e:
+            self.ui.write_log("Ошибка:")
+            self.ui.write_log(traceback.format_exc())
+            return False
 
     def create_params(self, group_id, group_widget):
         params = self.reader.get_params_by_group(group_id)
-        parent = self.get_current_frame(group_widget)
+        parent = self.get_current_frame(group_widget)     
 
         if len(params) > 0:
             for i in range(len(params)):
                 param = params[i]
                 id = param["id"]
-                self.create_widget(widget_id=id, parent=parent, param=param)
-        # print(group_id, parent.type)
-
-        # ToDo сделать создание виджетов
+                widget = self.create_widget(widget_id=id, parent=parent, param=param)
+                widget.condition = param.get("condition")
+                group_widget.condition = param.get("condition")
 
     def get_value_type_type(self, param):
         if "enum" in param:
@@ -136,7 +164,7 @@ class App:
         # есть перечисление — создаём combobox
         if value_type == "enum":
             cmbx_dic = self.reader.get_enum_dic(param)
-            self.ui.create_combobox(
+            widget = self.ui.create_combobox(
                 parent=parent,
                 id=param_id,
                 title=param_title,
@@ -146,12 +174,13 @@ class App:
                 side=TOP,
                 anchor=NW,
             )
+            widget.bind("<<ComboboxSelected>>", self.combobox_selected)
         # если это число, создаём spinbox и указываем ему нужный формат
         if value_type == "int" or value_type == "double":
             min_ = param.get("min")
             max_ = param.get("max")
             description = param.get("description")
-            self.ui.create_spinbox(
+            widget = self.ui.create_spinbox(
                 parent=parent,
                 id=param_id,
                 title=param_title,
@@ -165,7 +194,7 @@ class App:
                 anchor=NW,
             )
 
-        return False
+        return widget
 
     # получаем текущий фрейм
     def get_current_frame(self, parent):
@@ -174,6 +203,33 @@ class App:
         else:
             curr_frame = parent
         return curr_frame
+
+    def combobox_selected(self, event):
+        self.widgets_hide_by_condition()
+
+    def widgets_hide_by_condition(self):
+        values = self.ui.get_values()
+        widgets = self.ui.get_widgets()
+
+        for key in widgets:
+            item = widgets[key]
+
+            if (
+                item.type == "group"
+                or item.type == "spinbox"
+                or item.type == "combobox"
+            ):
+                if hasattr(item, "condition"):
+                    condition = item.condition
+                    if condition != None:
+                        visible = self.reader.calc_condition(condition, values)
+                    else:
+                        visible = True
+
+                    if visible:
+                        self.ui.widget_show(key)
+                    else:
+                        self.ui.widget_hide(key)
 
 
 app = App()
