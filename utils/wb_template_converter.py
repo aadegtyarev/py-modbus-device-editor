@@ -45,6 +45,13 @@ class WbTemplateReader:
         params = self.wb_template["device"].get("parameters")
         if type(params) != list:
             params = self.convert_dic(params)
+        
+        for i in range(len(params)):
+            condition = params[i].get("condition")
+            if (condition != None):
+                condition = condition.replace("&&", " and ")
+                condition = condition.replace("||", " or ")
+                params[i]["condition"] = condition
         return params
 
     def get_setups(self):

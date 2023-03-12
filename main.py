@@ -2,8 +2,7 @@ import traceback
 from modules import template_reader
 from modules import ui_manager
 from tkinter import *
-from pymodbus.client import ModbusSerialClient
-
+from modules import modbus
 
 class App:
     reader = None
@@ -40,6 +39,18 @@ class App:
                 self.ui.write_log(traceback.format_exc())
 
     def create_interface(self):
+        # если у нас есть параметры без групп, например, режимы — создаём для них отдельную вкладку
+        params_without_group = self.reader.get_params_without_group()
+
+        if (len(params_without_group)>0):
+            parent = self.ui.create_tab("mode_params_group", "Режим")
+            curr_frame = parent.curr_frame
+
+            # перебираем безгрупные параметры и создаём для них виджеты
+            for i in range(len(params_without_group)):
+                param = params_without_group[i]
+                self.create_widget(widget_id=param["id"], parent=parent, param=param)
+
         # создаём вкладки из групп без поля group
         if self.create_pages():
             # создаём группы внутри вкладок
@@ -236,51 +247,36 @@ class App:
     def btn_read_params_click(self, event):
         mb_params = self.ui.get_modbus_params()
 
-        client = ModbusSerialClient(
-            port= mb_params["port"],
-            baudrate= mb_params["baudrate"],
-            bytesize= mb_params["bytesize"],
-            parity= mb_params["parity"],
-            stopbits= mb_params["stopbits"]
-        )
+        client = modbus.ModbusRTUClient(mb_params)        
         slave_id = int(mb_params["slave_id"])
         if (client.connect()):
             self.ui.write_log("Открыл порт")
-            if self.read_params_from_modbus(client, slave_id):
-                self.widgets_hide_by_condition()
+            self.read_params_from_modbus(client, slave_id)
+            self.widgets_hide_by_condition()        
         else:
             self.ui.write_log("Не смог открыть порт {}".format(mb_params["port"]))
+        client.disconnect()
         return False
     
     def read_params_from_modbus(self, client, slave_id):
         params = self.reader.get_params()
-        res = False
         if len(params) > 0:            
             for i in range(len(params)):
                 param = params[i]
                 address = int(param["address"])
                 if (param["reg_type"] == "holding"):
                     try:
-                        data = client.read_holding_registers(slave=slave_id, address= address)
+                        value = client.read_holding(slave_id=slave_id, reg_address= address)
 
-                        if hasattr(data, "registers"):
-                            self.ui.widget_enable(param["id"])
-                            self.ui.set_value(param["id"], data.registers, scale=param.get("scale"))
+                        self.ui.set_value(param["id"], value, scale=param.get("scale"))
+                        self.ui.widget_enable(param["id"])
 
-                        if ("No Response received from the remote unit" in "%s" % data):
-                            self.ui.write_log("Нет связи с устройством.")
-                            break
-                        if ("Exception Response" in "%s" % data):
+                    except Exception as e:
+                        if ("ExceptionResponse" in "%s"%e):
                             self.ui.widget_disable(param["id"])
                             self.ui.write_log("Регистр {} не читается.".format(address))
-
-                        res =True
-                    except Exception as e:
-                        self.ui.write_log("Ошибка:")
-                        self.ui.write_log(traceback.format_exc())
-                        res = False
-                        break
-        return res
-    
-        
+                        if ("ModbusIOException" in "%s"%e):
+                            self.ui.write_log("Нет связи с устройством.")
+                            break                                                                                    
+       
 app = App()

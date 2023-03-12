@@ -543,7 +543,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
+                "condition": "(dimmer_mode==0 or dimmer_mode==16 or dimmer_mode==32)"
             },
             {
                 "id": "fader_inc_w2",
@@ -555,7 +555,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
+                "condition": "(dimmer_mode==0 or dimmer_mode==16 or dimmer_mode==32)"
             },
             {
                 "id": "fader_inc_w3",
@@ -567,7 +567,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
+                "condition": "(dimmer_mode==0 or dimmer_mode==1 or dimmer_mode==2)"
             },
             {
                 "id": "fader_inc_w4",
@@ -579,7 +579,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
+                "condition": "(dimmer_mode==0 or dimmer_mode==1 or dimmer_mode==2 or dimmer_mode==256)"
             },
             {
                 "id": "fader_inc_w1_w2",
@@ -591,7 +591,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
+                "condition": "(dimmer_mode==1 or dimmer_mode==17 or dimmer_mode==33)"
             },
             {
                 "id": "fader_inc_w3_w4",
@@ -603,7 +603,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
+                "condition": "(dimmer_mode==16 or dimmer_mode==17 or dimmer_mode==18)"
             },
             {
                 "id": "fader_inc_w1_w2_w3_w4",
@@ -627,7 +627,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
+                "condition": "(dimmer_mode==2 or dimmer_mode==18 or dimmer_mode==34)"
             },
             {
                 "id": "fader_inc_cct1_v",
@@ -639,7 +639,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
+                "condition": "(dimmer_mode==2 or dimmer_mode==18 or dimmer_mode==34)"
             },
             {
                 "id": "fader_inc_cct2_t",
@@ -651,7 +651,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
+                "condition": "(dimmer_mode==32 or dimmer_mode==33 or dimmer_mode==34)"
             },
             {
                 "id": "fader_inc_cct2_v",
@@ -663,7 +663,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
+                "condition": "(dimmer_mode==32 or dimmer_mode==33 or dimmer_mode==34)"
             },
             {
                 "id": "fade_rgb_h",
@@ -712,7 +712,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
+                "condition": "(dimmer_mode==0 or dimmer_mode==16 or dimmer_mode==32)"
             },
             {
                 "id": "fader_dec_w2",
@@ -724,7 +724,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
+                "condition": "(dimmer_mode==0 or dimmer_mode==16 or dimmer_mode==32)"
             },
             {
                 "id": "fader_dec_w3",
@@ -736,7 +736,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
+                "condition": "(dimmer_mode==0 or dimmer_mode==1 or dimmer_mode==2)"
             },
             {
                 "id": "fader_dec_w4",
@@ -748,7 +748,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
+                "condition": "(dimmer_mode==0 or dimmer_mode==1 or dimmer_mode==2 or dimmer_mode==256)"
             },
             {
                 "id": "fader_dec_w1_w2",
@@ -760,7 +760,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
+                "condition": "(dimmer_mode==1 or dimmer_mode==17 or dimmer_mode==33)"
             },
             {
                 "id": "fader_dec_w3_w4",
@@ -772,7 +772,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
+                "condition": "(dimmer_mode==16 or dimmer_mode==17 or dimmer_mode==18)"
             },
             {
                 "id": "fader_dec_w1_w2_w3_w4",
@@ -796,7 +796,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
+                "condition": "(dimmer_mode==2 or dimmer_mode==18 or dimmer_mode==34)"
             },
             {
                 "id": "fader_dec_cct1_v",
@@ -808,7 +808,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
+                "condition": "(dimmer_mode==2 or dimmer_mode==18 or dimmer_mode==34)"
             },
             {
                 "id": "fader_dec_cct2_t",
@@ -820,7 +820,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
+                "condition": "(dimmer_mode==32 or dimmer_mode==33 or dimmer_mode==34)"
             },
             {
                 "id": "fader_dec_cct2_v",
@@ -832,7 +832,7 @@
                 "default": 1000,
                 "min": 0,
                 "max": 30000,
-                "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
+                "condition": "(dimmer_mode==32 or dimmer_mode==33 or dimmer_mode==34)"
             },
             {
                 "id": "fader_dec_rgb_s",

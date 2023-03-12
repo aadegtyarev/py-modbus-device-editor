@@ -289,7 +289,7 @@
                     "auto"
                 ],
                 "default": 0,
-                "condition": "in1_type==3||in1_type==257",
+                "condition": "in1_type==3 or in1_type==257",
                 "id": "in1_gain"
             },
             {
@@ -298,7 +298,7 @@
                 "order": 5,
                 "address": "0x1408",
                 "default": 0,
-                "condition": "in1_type==5376||in1_type==4864||in1_type==4865||in1_type==4866||in1_type==5120||in1_type==5121",
+                "condition": "in1_type==5376 or in1_type==4864 or in1_type==4865 or in1_type==4866 or in1_type==5120 or in1_type==5121",
                 "id": "in1_min"
             },
             {
@@ -307,7 +307,7 @@
                 "order": 6,
                 "address": "0x140A",
                 "default": 10000,
-                "condition": "in1_type==5376||in1_type==4864||in1_type==4865||in1_type==4866||in1_type==5120||in1_type==5121",
+                "condition": "in1_type==5376 or in1_type==4864 or in1_type==4865 or in1_type==4866 or in1_type==5120 or in1_type==5121",
                 "id": "in1_max"
             },
             {
@@ -341,7 +341,7 @@
                 "order": 1,
                 "required": true,
                 "default": 0,
-                "condition": "in1_type==0||in1_type==1||in1_type==2||in1_type==3||in1_type==4352||in1_type==4353||in1_type==4354||in1_type==4355||in1_type==4368||in1_type==4369||in1_type==4370||in1_type==4371||in1_type==4384||in1_type==4385||in1_type==4386||in1_type==4387||in1_type==4400||in1_type==4401||in1_type==4402||in1_type==4864||in1_type==4865||in1_type==4866||in1_type==5120||in1_type==5121||in1_type==5632||in1_type==5889||in1_type==6144",
+                "condition": "in1_type==0 or in1_type==1 or in1_type==2 or in1_type==3 or in1_type==4352 or in1_type==4353 or in1_type==4354 or in1_type==4355 or in1_type==4368 or in1_type==4369 or in1_type==4370 or in1_type==4371 or in1_type==4384 or in1_type==4385 or in1_type==4386 or in1_type==4387 or in1_type==4400 or in1_type==4401 or in1_type==4402 or in1_type==4864 or in1_type==4865 or in1_type==4866 or in1_type==5120 or in1_type==5121 or in1_type==5632 or in1_type==5889 or in1_type==6144",
                 "enum": [
                     0,
                     4352,
@@ -464,7 +464,7 @@
                     "auto"
                 ],
                 "default": 0,
-                "condition": "in1_n_type==3||in1_n_type==257",
+                "condition": "in1_n_type==3 or in1_n_type==257",
                 "id": "in1_n_gain"
             },
             {
@@ -473,7 +473,7 @@
                 "order": 5,
                 "address": "0x1409",
                 "default": 0,
-                "condition": "in1_n_type==5376||in1_n_type==4864||in1_n_type==4865||in1_n_type==4866||in1_n_type==5120||in1_n_type==5121",
+                "condition": "in1_n_type==5376 or in1_n_type==4864 or in1_n_type==4865 or in1_n_type==4866 or in1_n_type==5120 or in1_n_type==5121",
                 "id": "in1_n_min"
             },
             {
@@ -482,7 +482,7 @@
                 "order": 6,
                 "address": "0x140B",
                 "default": 10000,
-                "condition": "in1_n_type==5376||in1_n_type==4864||in1_n_type==4865||in1_n_type==4866||in1_n_type==5120||in1_n_type==5121",
+                "condition": "in1_n_type==5376 or in1_n_type==4864 or in1_n_type==4865 or in1_n_type==4866 or in1_n_type==5120 or in1_n_type==5121",
                 "id": "in1_n_max"
             },
             {
@@ -676,7 +676,7 @@
                     "auto"
                 ],
                 "default": 0,
-                "condition": "in2_type==3||in2_type==257",
+                "condition": "in2_type==3 or in2_type==257",
                 "id": "in2_gain"
             },
             {
@@ -685,7 +685,7 @@
                 "order": 5,
                 "address": "0x2408",
                 "default": 0,
-                "condition": "in2_type==5376||in2_type==4864||in2_type==4865||in2_type==4866||in2_type==5120||in2_type==5121",
+                "condition": "in2_type==5376 or in2_type==4864 or in2_type==4865 or in2_type==4866 or in2_type==5120 or in2_type==5121",
                 "id": "in2_min"
             },
             {
@@ -694,7 +694,7 @@
                 "order": 6,
                 "address": "0x240A",
                 "default": 10000,
-                "condition": "in2_type==5376||in2_type==4864||in2_type==4865||in2_type==4866||in2_type==5120||in2_type==5121",
+                "condition": "in2_type==5376 or in2_type==4864 or in2_type==4865 or in2_type==4866 or in2_type==5120 or in2_type==5121",
                 "id": "in2_max"
             },
             {
@@ -728,7 +728,7 @@
                 "order": 1,
                 "required": true,
                 "default": 0,
-                "condition": "in2_type==0||in2_type==1||in2_type==2||in2_type==3||in2_type==4352||in2_type==4353||in2_type==4354||in2_type==4355||in2_type==4368||in2_type==4369||in2_type==4370||in2_type==4371||in2_type==4384||in2_type==4385||in2_type==4386||in2_type==4387||in2_type==4400||in2_type==4401||in2_type==4402||in2_type==4864||in2_type==4865||in2_type==4866||in2_type==5120||in2_type==5121||in2_type==5632||in2_type==5889||in2_type==6144",
+                "condition": "in2_type==0 or in2_type==1 or in2_type==2 or in2_type==3 or in2_type==4352 or in2_type==4353 or in2_type==4354 or in2_type==4355 or in2_type==4368 or in2_type==4369 or in2_type==4370 or in2_type==4371 or in2_type==4384 or in2_type==4385 or in2_type==4386 or in2_type==4387 or in2_type==4400 or in2_type==4401 or in2_type==4402 or in2_type==4864 or in2_type==4865 or in2_type==4866 or in2_type==5120 or in2_type==5121 or in2_type==5632 or in2_type==5889 or in2_type==6144",
                 "enum": [
                     0,
                     4352,
@@ -851,7 +851,7 @@
                     "auto"
                 ],
                 "default": 0,
-                "condition": "in2_n_type==3||in2_n_type==257",
+                "condition": "in2_n_type==3 or in2_n_type==257",
                 "id": "in2_n_gain"
             },
             {
@@ -860,7 +860,7 @@
                 "order": 5,
                 "address": "0x2409",
                 "default": 0,
-                "condition": "in2_n_type==5376||in2_n_type==4864||in2_n_type==4865||in2_n_type==4866||in2_n_type==5120||in2_n_type==5121",
+                "condition": "in2_n_type==5376 or in2_n_type==4864 or in2_n_type==4865 or in2_n_type==4866 or in2_n_type==5120 or in2_n_type==5121",
                 "id": "in2_n_min"
             },
             {
@@ -869,7 +869,7 @@
                 "order": 6,
                 "address": "0x240B",
                 "default": 10000,
-                "condition": "in2_n_type==5376||in2_n_type==4864||in2_n_type==4865||in2_n_type==4866||in2_n_type==5120||in2_n_type==5121",
+                "condition": "in2_n_type==5376 or in2_n_type==4864 or in2_n_type==4865 or in2_n_type==4866 or in2_n_type==5120 or in2_n_type==5121",
                 "id": "in2_n_max"
             },
             {
@@ -1063,7 +1063,7 @@
                     "auto"
                 ],
                 "default": 0,
-                "condition": "in3_type==3||in3_type==257",
+                "condition": "in3_type==3 or in3_type==257",
                 "id": "in3_gain"
             },
             {
@@ -1072,7 +1072,7 @@
                 "order": 5,
                 "address": "0x3408",
                 "default": 0,
-                "condition": "in3_type==5376||in3_type==4864||in3_type==4865||in3_type==4866||in3_type==5120||in3_type==5121",
+                "condition": "in3_type==5376 or in3_type==4864 or in3_type==4865 or in3_type==4866 or in3_type==5120 or in3_type==5121",
                 "id": "in3_min"
             },
             {
@@ -1081,7 +1081,7 @@
                 "order": 6,
                 "address": "0x340A",
                 "default": 10000,
-                "condition": "in3_type==5376||in3_type==4864||in3_type==4865||in3_type==4866||in3_type==5120||in3_type==5121",
+                "condition": "in3_type==5376 or in3_type==4864 or in3_type==4865 or in3_type==4866 or in3_type==5120 or in3_type==5121",
                 "id": "in3_max"
             },
             {
@@ -1115,7 +1115,7 @@
                 "order": 1,
                 "required": true,
                 "default": 0,
-                "condition": "in3_type==0||in3_type==1||in3_type==2||in3_type==3||in3_type==4352||in3_type==4353||in3_type==4354||in3_type==4355||in3_type==4368||in3_type==4369||in3_type==4370||in3_type==4371||in3_type==4384||in3_type==4385||in3_type==4386||in3_type==4387||in3_type==4400||in3_type==4401||in3_type==4402||in3_type==4864||in3_type==4865||in3_type==4866||in3_type==5120||in3_type==5121||in3_type==5632||in3_type==5889||in3_type==6144",
+                "condition": "in3_type==0 or in3_type==1 or in3_type==2 or in3_type==3 or in3_type==4352 or in3_type==4353 or in3_type==4354 or in3_type==4355 or in3_type==4368 or in3_type==4369 or in3_type==4370 or in3_type==4371 or in3_type==4384 or in3_type==4385 or in3_type==4386 or in3_type==4387 or in3_type==4400 or in3_type==4401 or in3_type==4402 or in3_type==4864 or in3_type==4865 or in3_type==4866 or in3_type==5120 or in3_type==5121 or in3_type==5632 or in3_type==5889 or in3_type==6144",
                 "enum": [
                     0,
                     4352,
@@ -1238,7 +1238,7 @@
                     "auto"
                 ],
                 "default": 0,
-                "condition": "in3_n_type==3||in3_n_type==257",
+                "condition": "in3_n_type==3 or in3_n_type==257",
                 "id": "in3_n_gain"
             },
             {
@@ -1247,7 +1247,7 @@
                 "order": 5,
                 "address": "0x3409",
                 "default": 0,
-                "condition": "in3_n_type==5376||in3_n_type==4864||in3_n_type==4865||in3_n_type==4866||in3_n_type==5120||in3_n_type==5121",
+                "condition": "in3_n_type==5376 or in3_n_type==4864 or in3_n_type==4865 or in3_n_type==4866 or in3_n_type==5120 or in3_n_type==5121",
                 "id": "in3_n_min"
             },
             {
@@ -1256,7 +1256,7 @@
                 "order": 6,
                 "address": "0x340B",
                 "default": 10000,
-                "condition": "in3_n_type==5376||in3_n_type==4864||in3_n_type==4865||in3_n_type==4866||in3_n_type==5120||in3_n_type==5121",
+                "condition": "in3_n_type==5376 or in3_n_type==4864 or in3_n_type==4865 or in3_n_type==4866 or in3_n_type==5120 or in3_n_type==5121",
                 "id": "in3_n_max"
             },
             {
@@ -1450,7 +1450,7 @@
                     "auto"
                 ],
                 "default": 0,
-                "condition": "in4_type==3||in4_type==257",
+                "condition": "in4_type==3 or in4_type==257",
                 "id": "in4_gain"
             },
             {
@@ -1459,7 +1459,7 @@
                 "order": 5,
                 "address": "0x4408",
                 "default": 0,
-                "condition": "in4_type==5376||in4_type==4864||in4_type==4865||in4_type==4866||in4_type==5120||in4_type==5121",
+                "condition": "in4_type==5376 or in4_type==4864 or in4_type==4865 or in4_type==4866 or in4_type==5120 or in4_type==5121",
                 "id": "in4_min"
             },
             {
@@ -1468,7 +1468,7 @@
                 "order": 6,
                 "address": "0x440A",
                 "default": 10000,
-                "condition": "in4_type==5376||in4_type==4864||in4_type==4865||in4_type==4866||in4_type==5120||in4_type==5121",
+                "condition": "in4_type==5376 or in4_type==4864 or in4_type==4865 or in4_type==4866 or in4_type==5120 or in4_type==5121",
                 "id": "in4_max"
             },
             {
@@ -1502,7 +1502,7 @@
                 "order": 1,
                 "required": true,
                 "default": 0,
-                "condition": "in4_type==0||in4_type==1||in4_type==2||in4_type==3||in4_type==4352||in4_type==4353||in4_type==4354||in4_type==4355||in4_type==4368||in4_type==4369||in4_type==4370||in4_type==4371||in4_type==4384||in4_type==4385||in4_type==4386||in4_type==4387||in4_type==4400||in4_type==4401||in4_type==4402||in4_type==4864||in4_type==4865||in4_type==4866||in4_type==5120||in4_type==5121||in4_type==5632||in4_type==5889||in4_type==6144",
+                "condition": "in4_type==0 or in4_type==1 or in4_type==2 or in4_type==3 or in4_type==4352 or in4_type==4353 or in4_type==4354 or in4_type==4355 or in4_type==4368 or in4_type==4369 or in4_type==4370 or in4_type==4371 or in4_type==4384 or in4_type==4385 or in4_type==4386 or in4_type==4387 or in4_type==4400 or in4_type==4401 or in4_type==4402 or in4_type==4864 or in4_type==4865 or in4_type==4866 or in4_type==5120 or in4_type==5121 or in4_type==5632 or in4_type==5889 or in4_type==6144",
                 "enum": [
                     0,
                     4352,
@@ -1625,7 +1625,7 @@
                     "auto"
                 ],
                 "default": 0,
-                "condition": "in4_n_type==3||in4_n_type==257",
+                "condition": "in4_n_type==3 or in4_n_type==257",
                 "id": "in4_n_gain"
             },
             {
@@ -1634,7 +1634,7 @@
                 "order": 5,
                 "address": "0x4409",
                 "default": 0,
-                "condition": "in4_n_type==5376||in4_n_type==4864||in4_n_type==4865||in4_n_type==4866||in4_n_type==5120||in4_n_type==5121",
+                "condition": "in4_n_type==5376 or in4_n_type==4864 or in4_n_type==4865 or in4_n_type==4866 or in4_n_type==5120 or in4_n_type==5121",
                 "id": "in4_n_min"
             },
             {
@@ -1643,7 +1643,7 @@
                 "order": 6,
                 "address": "0x440B",
                 "default": 10000,
-                "condition": "in4_n_type==5376||in4_n_type==4864||in4_n_type==4865||in4_n_type==4866||in4_n_type==5120||in4_n_type==5121",
+                "condition": "in4_n_type==5376 or in4_n_type==4864 or in4_n_type==4865 or in4_n_type==4866 or in4_n_type==5120 or in4_n_type==5121",
                 "id": "in4_n_max"
             },
             {
@@ -1837,7 +1837,7 @@
                     "auto"
                 ],
                 "default": 0,
-                "condition": "in5_type==3||in5_type==257",
+                "condition": "in5_type==3 or in5_type==257",
                 "id": "in5_gain"
             },
             {
@@ -1846,7 +1846,7 @@
                 "order": 5,
                 "address": "0x5408",
                 "default": 0,
-                "condition": "in5_type==5376||in5_type==4864||in5_type==4865||in5_type==4866||in5_type==5120||in5_type==5121",
+                "condition": "in5_type==5376 or in5_type==4864 or in5_type==4865 or in5_type==4866 or in5_type==5120 or in5_type==5121",
                 "id": "in5_min"
             },
             {
@@ -1855,7 +1855,7 @@
                 "order": 6,
                 "address": "0x540A",
                 "default": 10000,
-                "condition": "in5_type==5376||in5_type==4864||in5_type==4865||in5_type==4866||in5_type==5120||in5_type==5121",
+                "condition": "in5_type==5376 or in5_type==4864 or in5_type==4865 or in5_type==4866 or in5_type==5120 or in5_type==5121",
                 "id": "in5_max"
             },
             {
@@ -1889,7 +1889,7 @@
                 "order": 1,
                 "required": true,
                 "default": 0,
-                "condition": "in5_type==0||in5_type==1||in5_type==2||in5_type==3||in5_type==4352||in5_type==4353||in5_type==4354||in5_type==4355||in5_type==4368||in5_type==4369||in5_type==4370||in5_type==4371||in5_type==4384||in5_type==4385||in5_type==4386||in5_type==4387||in5_type==4400||in5_type==4401||in5_type==4402||in5_type==4864||in5_type==4865||in5_type==4866||in5_type==5120||in5_type==5121||in5_type==5632||in5_type==5889||in5_type==6144",
+                "condition": "in5_type==0 or in5_type==1 or in5_type==2 or in5_type==3 or in5_type==4352 or in5_type==4353 or in5_type==4354 or in5_type==4355 or in5_type==4368 or in5_type==4369 or in5_type==4370 or in5_type==4371 or in5_type==4384 or in5_type==4385 or in5_type==4386 or in5_type==4387 or in5_type==4400 or in5_type==4401 or in5_type==4402 or in5_type==4864 or in5_type==4865 or in5_type==4866 or in5_type==5120 or in5_type==5121 or in5_type==5632 or in5_type==5889 or in5_type==6144",
                 "enum": [
                     0,
                     4352,
@@ -2012,7 +2012,7 @@
                     "auto"
                 ],
                 "default": 0,
-                "condition": "in5_n_type==3||in5_n_type==257",
+                "condition": "in5_n_type==3 or in5_n_type==257",
                 "id": "in5_n_gain"
             },
             {
@@ -2021,7 +2021,7 @@
                 "order": 5,
                 "address": "0x5409",
                 "default": 0,
-                "condition": "in5_n_type==5376||in5_n_type==4864||in5_n_type==4865||in5_n_type==4866||in5_n_type==5120||in5_n_type==5121",
+                "condition": "in5_n_type==5376 or in5_n_type==4864 or in5_n_type==4865 or in5_n_type==4866 or in5_n_type==5120 or in5_n_type==5121",
                 "id": "in5_n_min"
             },
             {
@@ -2030,7 +2030,7 @@
                 "order": 6,
                 "address": "0x540B",
                 "default": 10000,
-                "condition": "in5_n_type==5376||in5_n_type==4864||in5_n_type==4865||in5_n_type==4866||in5_n_type==5120||in5_n_type==5121",
+                "condition": "in5_n_type==5376 or in5_n_type==4864 or in5_n_type==4865 or in5_n_type==4866 or in5_n_type==5120 or in5_n_type==5121",
                 "id": "in5_n_max"
             },
             {
@@ -2224,7 +2224,7 @@
                     "auto"
                 ],
                 "default": 0,
-                "condition": "in6_type==3||in6_type==257",
+                "condition": "in6_type==3 or in6_type==257",
                 "id": "in6_gain"
             },
             {
@@ -2233,7 +2233,7 @@
                 "order": 5,
                 "address": "0x6408",
                 "default": 0,
-                "condition": "in6_type==5376||in6_type==4864||in6_type==4865||in6_type==4866||in6_type==5120||in6_type==5121",
+                "condition": "in6_type==5376 or in6_type==4864 or in6_type==4865 or in6_type==4866 or in6_type==5120 or in6_type==5121",
                 "id": "in6_min"
             },
             {
@@ -2242,7 +2242,7 @@
                 "order": 6,
                 "address": "0x640A",
                 "default": 10000,
-                "condition": "in6_type==5376||in6_type==4864||in6_type==4865||in6_type==4866||in6_type==5120||in6_type==5121",
+                "condition": "in6_type==5376 or in6_type==4864 or in6_type==4865 or in6_type==4866 or in6_type==5120 or in6_type==5121",
                 "id": "in6_max"
             },
             {
@@ -2276,7 +2276,7 @@
                 "order": 1,
                 "required": true,
                 "default": 0,
-                "condition": "in6_type==0||in6_type==1||in6_type==2||in6_type==3||in6_type==4352||in6_type==4353||in6_type==4354||in6_type==4355||in6_type==4368||in6_type==4369||in6_type==4370||in6_type==4371||in6_type==4384||in6_type==4385||in6_type==4386||in6_type==4387||in6_type==4400||in6_type==4401||in6_type==4402||in6_type==4864||in6_type==4865||in6_type==4866||in6_type==5120||in6_type==5121||in6_type==5632||in6_type==5889||in6_type==6144",
+                "condition": "in6_type==0 or in6_type==1 or in6_type==2 or in6_type==3 or in6_type==4352 or in6_type==4353 or in6_type==4354 or in6_type==4355 or in6_type==4368 or in6_type==4369 or in6_type==4370 or in6_type==4371 or in6_type==4384 or in6_type==4385 or in6_type==4386 or in6_type==4387 or in6_type==4400 or in6_type==4401 or in6_type==4402 or in6_type==4864 or in6_type==4865 or in6_type==4866 or in6_type==5120 or in6_type==5121 or in6_type==5632 or in6_type==5889 or in6_type==6144",
                 "enum": [
                     0,
                     4352,
@@ -2399,7 +2399,7 @@
                     "auto"
                 ],
                 "default": 0,
-                "condition": "in6_n_type==3||in6_n_type==257",
+                "condition": "in6_n_type==3 or in6_n_type==257",
                 "id": "in6_n_gain"
             },
             {
@@ -2408,7 +2408,7 @@
                 "order": 5,
                 "address": "0x6409",
                 "default": 0,
-                "condition": "in6_n_type==5376||in6_n_type==4864||in6_n_type==4865||in6_n_type==4866||in6_n_type==5120||in6_n_type==5121",
+                "condition": "in6_n_type==5376 or in6_n_type==4864 or in6_n_type==4865 or in6_n_type==4866 or in6_n_type==5120 or in6_n_type==5121",
                 "id": "in6_n_min"
             },
             {
@@ -2417,7 +2417,7 @@
                 "order": 6,
                 "address": "0x640B",
                 "default": 10000,
-                "condition": "in6_n_type==5376||in6_n_type==4864||in6_n_type==4865||in6_n_type==4866||in6_n_type==5120||in6_n_type==5121",
+                "condition": "in6_n_type==5376 or in6_n_type==4864 or in6_n_type==4865 or in6_n_type==4866 or in6_n_type==5120 or in6_n_type==5121",
                 "id": "in6_n_max"
             },
             {

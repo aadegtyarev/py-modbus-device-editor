@@ -6,10 +6,8 @@ from . import ui_manager
 
 class ModbusRTUClient:
     client = None
-    errors_count = 0
-    max_errors = 5
 
-    def init(self, mb_params):
+    def __init__(self, mb_params):
         self.client = ModbusSerialClient(
             port=mb_params["port"],
             baudrate=mb_params["baudrate"],

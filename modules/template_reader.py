@@ -1,5 +1,5 @@
 import json
-
+import traceback
 
 class TemplateReader:
     template = None
@@ -32,6 +32,15 @@ class TemplateReader:
                 res.append(param)
         return res
 
+    def get_params_without_group(self):
+        res = {}
+        params = self.get_params()
+        for i in range(len(params)):
+            param = params[i]
+            if param.get("group") == None:
+                res[i] = param
+        return res
+
     def get_translate(self, string, language="ru"):
         device = self.template["device"]
 
@@ -60,7 +69,6 @@ class TemplateReader:
         try:
             return eval(condition, {}, values)
         except Exception as e:
-            print(
-                "Ошибка в выражении: {}\n {}".format(condition, traceback.format_exc())
-            )
+            raise Exception("Ошибка в выражении: {}\n {}".format(condition, traceback.format_exc()))
+
             return False
