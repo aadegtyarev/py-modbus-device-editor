@@ -130,7 +130,7 @@ class UiManager:
             value_type="int",
             default=1,
             width=4,
-            description=False,
+            description=None,
             side=LEFT,
         )
 

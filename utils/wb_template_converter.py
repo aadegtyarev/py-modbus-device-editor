@@ -5,7 +5,7 @@ from pathlib import Path
 import argparse
 import os
 
-
+# Использование: python3 ./utils/wb_template_converter.py --src_dir "templates/wb" --dest_dir "templates"
 class WbTemplateReader:
     wb_template = ""
 
