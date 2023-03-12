@@ -479,6 +479,7 @@ class UiManager:
         widget = self.widgets.get(widget_id + "_title")
         if widget != None:
             widget.pack(widget.pack_info)
+            # не забываем глянуть, кто родитель и тоже его показать
             parent = self.widgets.get(widget.parent_id)
             parent.pack(parent.pack_info)
 
