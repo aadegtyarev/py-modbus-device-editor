@@ -367,11 +367,6 @@ class UiManager:
             widget_type="spinbox",
             widget_opts={"padx": 5, "pady": 0, "side": TOP, "anchor": NW},
         )
-        # spinbox.type = "spinbox"
-        # spinbox.pack(padx=5, pady=0, side=TOP, anchor=NW)
-        # spinbox.pack_info = self.get_pack_info(spinbox)
-        # self.widgets[id] = spinbox
-
         if description:
             self.create_label(
                 group,

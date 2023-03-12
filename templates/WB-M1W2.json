@@ -1,0 +1,83 @@
+{
+    "title": "WB-M1W2_template_title",
+    "device": {
+        "name": "WB-M1W2",
+        "groups": [
+            {
+                "title": "General",
+                "id": "general",
+                "order": 3
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 4
+            }
+        ],
+        "parameters": [
+            {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [
+                    96,
+                    192,
+                    384,
+                    576,
+                    1152
+                ],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1,
+                "id": "baud_rate"
+            },
+            {
+                "title": "temperature_readings_filter_deg_title",
+                "description": "temperature_readings_filter_deg_description",
+                "address": 99,
+                "reg_type": "holding",
+                "scale": 0.0625,
+                "default": 1,
+                "group": "general",
+                "order": 2,
+                "id": "temperature_readings_filter_deg"
+            },
+            {
+                "title": "RS-485 Response Delay (ms)",
+                "address": 113,
+                "reg_type": "holding",
+                "default": 8,
+                "group": "general",
+                "order": 3,
+                "id": "rs485_response_delay_ms"
+            },
+            {
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Enabled",
+                    "Disabled"
+                ],
+                "default": 0,
+                "group": "general",
+                "order": 4,
+                "id": "disable_indication"
+            }
+        ],
+        "translates": null,
+        "setup": null
+    }
+}

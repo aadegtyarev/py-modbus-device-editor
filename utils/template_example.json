@@ -1,0 +1,29 @@
+{
+    "device_name": "My Device",
+    "groups": [
+        {
+            "id": "group_id",
+            "name": "My Group",
+            "description": "My Description",
+            "group": "group_id",
+            "condition": "param2_id==6"
+        }
+    ],
+    "parameters": [
+        {
+            "id": "param_id",
+            "name": "My Param",
+            "description": "My Description",
+            "address": 0,
+            "reg_type": "holding",
+            "scale": 0.175,
+            "enum": [],
+            "enum_titles": [],
+            "min": 0,
+            "max": 100,
+            "default": 0,
+            "group": "group_id",
+            "condition": "param2_id==6"
+        }
+    ]
+}
