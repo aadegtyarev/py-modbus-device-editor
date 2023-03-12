@@ -367,7 +367,7 @@ class UiManager:
             widget_type="spinbox",
             widget_opts={"padx": 5, "pady": 0, "side": TOP, "anchor": NW},
         )
-        if description:
+        if description != None:
             self.create_label(
                 group,
                 id + "_decsription",

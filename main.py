@@ -99,8 +99,7 @@ class App:
             else:
                 group_widget = self.ui.get_widget(group_id)
 
-            if group_widget != None:
-                self.ui.write_log("Создаю виджеты.")
+            if group_widget != None:                
                 self.create_params(group_id, group_widget)
 
     def create_params(self, group_id, group_widget):
@@ -111,12 +110,12 @@ class App:
             for i in range(len(params)):
                 param = params[i]
                 id = param["id"]
-                self.create_widget(widget_id=id, group_widget=group_widget, param=param)
+                self.create_widget(widget_id=id, parent=parent, param=param)
         # print(group_id, parent.type)
 
         # ToDo сделать создание виджетов
 
-    def get_param_type(self, param):
+    def get_value_type_type(self, param):
         if "enum" in param:
             return "enum"
 
@@ -125,27 +124,50 @@ class App:
 
         return "int"
 
-    def create_widget(self, widget_id, group_widget, param):
-        param_type = self.get_param_type(param)
+    def create_widget(self, widget_id, parent, param):
+        value_type = self.get_value_type_type(
+            param
+        )  # от типа значения зависит ти и настройки создаваемого виджета
 
-        if param_type == "enum":
-            param_id = param["id"]
-            param_title = self.reader.get_translate(param.get("title"))
-            param_default = param.get("default")
+        param_id = param["id"]
+        param_title = self.reader.get_translate(param.get("title"))
+        param_default = param.get("default")
+
+        # есть перечисление — создаём combobox
+        if value_type == "enum":
             cmbx_dic = self.reader.get_enum_dic(param)
             self.ui.create_combobox(
-                parent=group_widget,
+                parent=parent,
                 id=param_id,
                 title=param_title,
                 dic=cmbx_dic,
                 default=param_default,
                 width=50,
-                side=TOP, 
-                anchor=NW
+                side=TOP,
+                anchor=NW,
+            )
+        # если это число, создаём spinbox и указываем ему нужный формат
+        if value_type == "int" or value_type == "double":
+            min_ = param.get("min")
+            max_ = param.get("max")
+            description = param.get("description")
+            self.ui.create_spinbox(
+                parent=parent,
+                id=param_id,
+                title=param_title,
+                min_=min_,
+                max_=max_,
+                value_type=value_type,
+                default=param_default,
+                width=5,
+                description=description,
+                side=TOP,
+                anchor=NW,
             )
 
         return False
 
+    # получаем текущий фрейм
     def get_current_frame(self, parent):
         if parent.type == "tab":
             curr_frame = parent.curr_frame
