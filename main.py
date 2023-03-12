@@ -2,18 +2,20 @@ import traceback
 from modules import template_reader
 from modules import ui_manager
 from tkinter import *
+from pymodbus.client import ModbusSerialClient
 
 
 class App:
     reader = None
     ui = None
-    mb = None
+    # mb = None
     max_col = 2  # количество колонок с виджетами +1
 
     def __init__(self):
         # создаём объекты для работы
         self.ui = ui_manager.UiManager()
         self.ui.btn_open_template.bind("<ButtonPress-1>", self.btn_open_template_click)
+        self.ui.btn_read_params.bind("<ButtonPress-1>", self.btn_read_params_click)
 
         self.reader = template_reader.TemplateReader()
 
@@ -231,5 +233,52 @@ class App:
                     else:
                         self.ui.widget_hide(key)
 
+    def btn_read_params_click(self, event):
+        mb_params = self.ui.get_modbus_params()
 
+        client = ModbusSerialClient(
+            port= mb_params["port"],
+            baudrate= mb_params["baudrate"],
+            bytesize= mb_params["bytesize"],
+            parity= mb_params["parity"],
+            stopbits= mb_params["stopbits"]
+        )
+        slave_id = int(mb_params["slave_id"])
+        if (client.connect()):
+            self.ui.write_log("Открыл порт")
+            if self.read_params_from_modbus(client, slave_id):
+                self.widgets_hide_by_condition()
+        else:
+            self.ui.write_log("Не смог открыть порт {}".format(mb_params["port"]))
+        return False
+    
+    def read_params_from_modbus(self, client, slave_id):
+        params = self.reader.get_params()
+        res = False
+        if len(params) > 0:            
+            for i in range(len(params)):
+                param = params[i]
+                address = int(param["address"])
+                if (param["reg_type"] == "holding"):
+                    try:
+                        data = client.read_holding_registers(slave=slave_id, address= address)
+
+                        if hasattr(data, "registers"):
+                            self.ui.set_value(param["id"], data.registers, scale=param.get("scale"))
+
+                        if ("No Response received from the remote unit" in "%s" % data):
+                            self.ui.write_log("Нет связи с устройством.")
+                            break
+                        if ("Exception Response" in "%s" % data):
+                            self.ui.write_log("Регистр {} не читается.".format(address))
+
+                        res =True
+                    except Exception as e:
+                        self.ui.write_log("Ошибка:")
+                        self.ui.write_log(traceback.format_exc())
+                        res = False
+                        break
+        return res
+    
+        
 app = App()

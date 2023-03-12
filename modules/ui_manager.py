@@ -379,9 +379,21 @@ class UiManager:
     def is_exists_widget(self, id):
         return widgets.get(id) != None
 
-    def set_value(self, widget_id, value):
-        self.widgets[widget_id].set(value)
-
+    def set_value(self, widget_id, value, scale = None):
+        widget = self.widgets.get(widget_id)
+        value = value[0]
+        if widget.type == "spinbox":
+            if scale != None:
+                value = value * scale
+                widget.set(value)
+            else:
+                widget.set(value)
+        else:
+            if widget.type == "combobox":
+                dic = widget.dic
+                index = dic["enum"].index(value)
+                widget.current(index)    
+                    
     def get_value(self, widget_id):
         widget = self.widgets[widget_id]
         if("disabled" not in widget.state()):
@@ -421,7 +433,6 @@ class UiManager:
             "bytesize": self.get_value("nodel_mb_bytesize"),
             "parity": self.get_value("nodel_mb_parity"),
             "stopbits": self.get_value("nodel_mb_stopbits"),
-            "slave_id": self.get_value("nodel_mb_slave_id"),
         }
 
     def get_widget(self, widget_id):
