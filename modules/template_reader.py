@@ -8,36 +8,48 @@ class TemplateReader:
         with open(file_patch, "r") as j:
             self.template = json.load(j)
 
-    def get_device_name(self):
-        return self.template.get("device_name")
+    def get_title(self):
+        return self.template.get("title")
 
+    def get_device_name(self):
+        return self.template["device"].get("name")
 
     def get_groups(self):
-        return self.template.get("groups")
-
+        return self.template["device"].get("groups")
 
     def get_params(self):
-        return self.template.get("params")
+        return self.template["device"].get("parameters")
+
+    def get_setups(self):
+        return self.template["device"].get("setups")
 
     def get_params_by_group(self, group_id):
         res = {}
         params = self.get_params()
         for key in params:
-            if params[key]["widget"].get("group") == group_id:
+            if params[key].get("group") == group_id:
                 res[key] = params[key]
-        return res       
+        return res
+
+    def get_translate(self, string, language="ru"):
+        device = self.template["device"]
+
+        if "translations" in device:
+            if language in device["translations"]:
+                if string in device["translations"][language]:
+                    return device["translations"][language][string]
+                else:
+                    return string
+            else:
+                return string
+        else:
+            return string               
 
     def get_enum_dic(self, param):
-        value_options = param["widget"].get("value_options")
-        enum = value_options["enum"]
-        enum_titles = value_options["enum_titles"]
-
-        for i in range(len(enum_titles)):
-            enum_titles[i] = enum_titles[i]
-
+        enum = param["enum"]
+        enum_titles = param["enum_titles"]
         dic = {"enum": enum, "enum_titles": enum_titles}
         return dic
-
 
     def calc_condition(self, condition, values):
         try:

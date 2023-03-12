@@ -57,8 +57,8 @@ class WbTemplateReader:
             groups = self.convert_dic(groups)
         return groups
     
-    def get_translates(self):
-        return self.wb_template["device"].get("translates")
+    def get_translations(self):
+        return self.wb_template["device"].get("translations")
 
     def get_translate(self, string, language="ru"):
         device = self.wb_template["device"]
@@ -93,7 +93,7 @@ class WbConvertTemplate:
             device_name = self.reader.get_device_name()
             wb_groups = self.reader.get_groups()
             wb_params = self.reader.get_parameters()
-            wb_translate = self.reader.get_translates()
+            wb_translate = self.reader.get_translations()
             wb_setup = self.reader.get_setups()
 
             template = {
@@ -102,7 +102,7 @@ class WbConvertTemplate:
                     "name": device_name,
                     "groups": wb_groups,
                     "parameters": wb_params,
-                    "translates": wb_translate,
+                    "translations": wb_translate,
                     "setup": wb_setup                   
                 }
             }

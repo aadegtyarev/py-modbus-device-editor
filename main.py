@@ -3,6 +3,7 @@ from modules import template_reader
 from modules import ui_manager
 from tkinter import *
 
+
 class App:
     reader = None
     ui = None
@@ -33,8 +34,8 @@ class App:
                 self.ui.write_log(traceback.format_exc())
 
     def create_interface(self):
-        self.create_pages()
-        self.create_groups()
+        if self.create_pages():
+            self.create_groups()
 
     def load_template(self, file_patch):
         self.ui.write_log("Открываю файл {}".format(file_patch))
@@ -52,13 +53,15 @@ class App:
         try:
             groups = self.reader.get_groups()
 
-            for key in groups:
-                group = groups[key]
+            for i in range(len(groups)):
+                group = groups[i]
+                title = self.reader.get_translate(group.get("title"))
+                group_id = group.get("id")
+                # print(group)
 
                 if group.get("group") == None:
-                    group_widget = self.ui.create_tab(key, group.get("title"))
+                    group_widget = self.ui.create_tab(group_id, title)
                     group_widget.condition = group.get("condition")
-
 
             return True
         except Exception as e:
@@ -71,10 +74,11 @@ class App:
 
         groups = self.reader.get_groups()
 
-        for key in groups:
-            group = groups[key]
-            title = group.get("title")
+        for i in range(len(groups)):
+            group = groups[i]
+            title = self.reader.get_translate(group.get("title"))
             parent_id = group.get("group")
+            group_id = group.get("id")
             parent = self.ui.get_widget(parent_id)
 
             if parent != None:
@@ -85,54 +89,46 @@ class App:
                     curr_frame = self.ui.create_row(parent, parent_id + "_row")
                     parent.curr_frame = curr_frame
                     parent.curr_col = 0
-                    parent.curr_row += 1 
-                
-                group_widget = self.ui.create_group(
-                                curr_frame, key, title, side=LEFT, anchor=NW
-                            )
-                group_widget.condition = group.get("condition")
-                # self.ui.create_label(group_widget, key, key)
-            else:
-                group_widget = self.ui.get_widget(key)
+                    parent.curr_row += 1
 
-            if (group_widget != None):
-                self.create_params(key, group_widget)
+                group_widget = self.ui.create_group(
+                    curr_frame, group_id, title, side=LEFT, anchor=NW
+                )
+                group_widget.condition = group.get("condition")
+                # self.ui.create_label(group_widget, group_id, group_id)
+            else:
+                group_widget = self.ui.get_widget(group_id)
+
+            if group_widget != None:
+                self.create_params(group_id, group_widget)
 
     def create_params(self, group_id, group_widget):
+        return False
         params = self.reader.get_params_by_group(group_id)
         parent = self.get_current_frame(group_widget)
 
-        if (len(params)>0):
-            for key in params:
-                param = params[key]
+        if len(params) > 0:
+            for i in range(len(params)):
+                param = params[i]
                 self.create_widget(
-                    widget_id=key,
-                    group_widget=group_widget,
-                    param=param
+                    widget_id=key, group_widget=group_widget, param=param
                 )
-                # print(group_id, parent.type)
+        # print(group_id, parent.type)
 
+        # ToDo сделать создание виджетов
 
-                #ToDo сделать создание виджетов
-    
+    def get_param_type(self, param):
+        if ("enum" in param):
+            return 'enum'
+
+        if ("scale" in param):
+            return "double"
+        
+        return "int"
+
     def create_widget(self, widget_id, group_widget, param):
-        param_type = param["widget"].get("type")
-
-        if param_type == "enum":
-            title = param["widget"].get("title")
-            dic = self.reader.get_enum_dic(param)
-            default = param["widget"].get("default")
-            
-            self.ui.create_combobox(
-                parent= group_widget, 
-                id= widget_id, 
-                title =title, 
-                dic=dic, 
-                default = default, 
-                width=50,
-                side=TOP, 
-                anchor=NW
-                )
+        print(self.get_param_type(param))
+        return False
 
     def get_current_frame(self, parent):
         if parent.type == "tab":

@@ -77,7 +77,46 @@
                 "id": "disable_indication"
             }
         ],
-        "translates": null,
+        "translations": {
+            "en": {
+                "WB-M1W2_template_title": "WB-M1W2 (2-channel temperature measurement module)",
+                "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
+                "temperature_readings_filter_deg_description": "New value is discarded if it differs from previous one by more than filter value. Write 0 to disable filter",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-M1W2_template_title": "WB-M1W2 (2-канальный преобразователь для термометров 1-Wire)",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
+                "temperature_readings_filter_deg_description": "Новое значение отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр",
+                "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
+                "Status LED": "Индикатор состояния",
+                "Enabled": "Активен",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Input 1": "Вход 1",
+                "Input 2": "Вход 2",
+                "1-Wire": "Датчик 1-Wire",
+                "External Sensor 1": "Датчик температуры 1",
+                "External Sensor 1 OK": "Датчик 1 подключен",
+                "External Sensor 2": "Датчик температуры 2",
+                "External Sensor 2 OK": "Датчик 2 подключен",
+                "Discrete Input": "Дискретный вход",
+                "Discrete Input 1": "Дискретный вход 1",
+                "Counter 1": "Счетчик 1",
+                "Discrete Input 2": "Дискретный вход 2",
+                "Counter 2": "Счетчик 2",
+                "Serial NO": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Disabled": "Отключен"
+            }
+        },
         "setup": null
     }
 }
