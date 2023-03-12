@@ -32,6 +32,14 @@ class TemplateReader:
                 res.append(param)
         return res
 
+    def get_group_by_param_id(self, param_id):
+        params = self.get_params()
+        for i in range(len(params)):
+            param = params[i]
+            if param.get("id") == param_id:
+                return param.get("group")
+                
+
     def get_params_without_group(self):
         res = {}
         params = self.get_params()

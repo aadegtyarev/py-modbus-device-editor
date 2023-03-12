@@ -4,6 +4,7 @@ from modules import ui_manager
 from tkinter import *
 from modules import modbus
 
+
 class App:
     reader = None
     ui = None
@@ -42,7 +43,7 @@ class App:
         # если у нас есть параметры без групп, например, режимы — создаём для них отдельную вкладку
         params_without_group = self.reader.get_params_without_group()
 
-        if (len(params_without_group)>0):
+        if len(params_without_group) > 0:
             parent = self.ui.create_tab("mode_params_group", "Режим")
             curr_frame = parent.curr_frame
 
@@ -107,7 +108,9 @@ class App:
                 parent = self.ui.get_widget(parent_id)
 
                 # а тут магия распределения групп по вкладкам
-                if parent != None: # если у группы нет родителя, то есть это у нас вкладка, то
+                if (
+                    parent != None
+                ):  # если у группы нет родителя, то есть это у нас вкладка, то
                     # проверяем, не вышли ли за пределы максимального числа колонок
                     if parent.curr_col < self.max_col:
                         # если не вышли, то получаем текущий фрейм (строку) и потом увеличиваем счётчик колонок
@@ -134,7 +137,7 @@ class App:
                     group_widget = self.ui.get_widget(group_id)
 
                 # если виджет группы существует — создаём параметры в ней
-                if group_widget != None:                
+                if group_widget != None:
                     self.create_params(group_id, group_widget)
                 else:
                     print("Виджет для группы {} не существует".format(group_id))
@@ -146,7 +149,7 @@ class App:
 
     def create_params(self, group_id, group_widget):
         params = self.reader.get_params_by_group(group_id)
-        parent = self.get_current_frame(group_widget)     
+        parent = self.get_current_frame(group_widget)
 
         if len(params) > 0:
             for i in range(len(params)):
@@ -154,7 +157,7 @@ class App:
                 id = param["id"]
                 widget = self.create_widget(widget_id=id, parent=parent, param=param)
                 widget.condition = param.get("condition")
-                group_widget.condition = param.get("condition")
+                parent.condition = param.get("condition")
 
     def get_value_type_type(self, param):
         if "enum" in param:
@@ -247,36 +250,39 @@ class App:
     def btn_read_params_click(self, event):
         mb_params = self.ui.get_modbus_params()
 
-        client = modbus.ModbusRTUClient(mb_params)        
+        client = modbus.ModbusRTUClient(mb_params)
         slave_id = int(mb_params["slave_id"])
-        if (client.connect()):
+        if client.connect():
             self.ui.write_log("Открыл порт")
             self.read_params_from_modbus(client, slave_id)
-            self.widgets_hide_by_condition()        
+            self.widgets_hide_by_condition()
         else:
             self.ui.write_log("Не смог открыть порт {}".format(mb_params["port"]))
         client.disconnect()
         return False
-    
+
     def read_params_from_modbus(self, client, slave_id):
         params = self.reader.get_params()
-        if len(params) > 0:            
+        if len(params) > 0:
             for i in range(len(params)):
                 param = params[i]
                 address = int(param["address"])
-                if (param["reg_type"] == "holding"):
+                if param["reg_type"] == "holding":
                     try:
-                        value = client.read_holding(slave_id=slave_id, reg_address= address)
+                        value = client.read_holding(
+                            slave_id=slave_id, reg_address=address
+                        )
 
                         self.ui.set_value(param["id"], value, scale=param.get("scale"))
                         self.ui.widget_enable(param["id"])
 
                     except Exception as e:
-                        if ("ExceptionResponse" in "%s"%e):
+                        if "ExceptionResponse" in "%s" % e:
                             self.ui.widget_disable(param["id"])
                             self.ui.write_log("Регистр {} не читается.".format(address))
-                        if ("ModbusIOException" in "%s"%e):
+                        if "ModbusIOException" in "%s" % e:
                             self.ui.write_log("Нет связи с устройством.")
-                            break                                                                                    
-       
+                            break
+
+
 app = App()

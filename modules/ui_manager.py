@@ -26,17 +26,21 @@ class UiManager:
 
         style = ttk.Style(self.win)
         style.theme_use("clam")
-        style.theme_settings("clam", {
-        "TCombobox": {
-            "map": {
-                "background": [("active", "darkgray"),
-                                ("disabled", "darkgray")],
-                "fieldbackground": [("disabled", "gray")],
-                "foreground": [("focus", "black"),
-                                ("!disabled", "black")]
-            }
-        }
-        })
+        style.theme_settings(
+            "clam",
+            {
+                "TCombobox": {
+                    "map": {
+                        "background": [
+                            ("active", "darkgray"),
+                            ("disabled", "darkgray"),
+                        ],
+                        "fieldbackground": [("disabled", "gray")],
+                        "foreground": [("focus", "black"), ("!disabled", "black")],
+                    }
+                }
+            },
+        )
 
         # Верхняя часть окна с настройками подключения
         top_frame = self.create_frame(
@@ -200,7 +204,9 @@ class UiManager:
         )
         self.log.configure(state="disabled")
 
-    def _widget_commit(self, widget, widget_id, widget_type, widget_opts):
+    def _widget_commit(self, widget, widget_id, widget_type, parent_id, widget_opts):
+        widget.id = widget_id
+        widget.parent_id = parent_id
         widget.pack(widget_opts)
         widget.pack_info = self.get_pack_info(widget)
         widget.type = widget_type
@@ -219,6 +225,7 @@ class UiManager:
         frame = ttk.Frame(parent, **args)
         frame.pack(padx=5, pady=5, side=side, fill=fill, expand=expand)
         frame.type = "frame"
+        frame.id = id
         self.widgets[id] = frame
         return frame
 
@@ -228,6 +235,7 @@ class UiManager:
         scrool_frame.pack(side=LEFT, fill=BOTH, expand=True)
         scrool_frame.pack_info = self.get_pack_info(scrool_frame)
         viewport.type = "viewport"
+        viewport.id = id
         self.widgets[id] = viewport
         return viewport
 
@@ -236,6 +244,7 @@ class UiManager:
         row_frame.type = "row"
         row_frame.pack(padx=5, pady=5, side=TOP, fill="x", expand="no")
         row_frame.pack_info = self.get_pack_info(row_frame)
+        row_frame.id = id
         self.widgets[id] = row_frame
         return row_frame
 
@@ -244,6 +253,7 @@ class UiManager:
         notebook.pack(**opts)
         notebook.pack_info = self.get_pack_info(notebook)
         notebook.type = "notebook"
+        notebook.id = id
         self.widgets[id] = notebook
         return notebook
 
@@ -261,6 +271,7 @@ class UiManager:
         viewport.child_wrap = self.create_group(
             viewport.curr_frame, id + "_wrap", "Базовые", side=LEFT, anchor=NW
         )
+        viewport.id = id
         self.widgets[id] = viewport
         return viewport
 
@@ -271,16 +282,18 @@ class UiManager:
             widget_id=id,
             widget_type="scrolled_text",
             widget_opts=opts,
+            parent_id=parent.id,
         )
         return scrolled_text
 
     def create_group(self, parent, id, title, relief=GROOVE, **opts):
-        group = ttk.LabelFrame(parent, text=title, relief=relief)
+        group = ttk.LabelFrame(parent, text=title, relief=relief)          
         self._widget_commit(
             widget=group,
             widget_id=id,
             widget_type="group",
             widget_opts={"padx": 5, "pady": 5, **opts},
+            parent_id=parent.id,
         )
         return group
 
@@ -291,6 +304,7 @@ class UiManager:
             widget_id=id,
             widget_type="label",
             widget_opts={"padx": 5, "pady": 5, **opts},
+            parent_id=parent.id,
         )
         return label
 
@@ -301,6 +315,7 @@ class UiManager:
             widget_id=id,
             widget_type="button",
             widget_opts={"padx": 5, "pady": 5, **opts},
+            parent_id=parent.id,
         )
         return button
 
@@ -314,6 +329,7 @@ class UiManager:
             widget_id=id,
             widget_type="combobox",
             widget_opts={"padx": 5, "pady": 0, "side": TOP, "anchor": NW},
+            parent_id=parent.id,
         )
 
         if default in dic["enum"]:
@@ -366,6 +382,7 @@ class UiManager:
             widget_id=id,
             widget_type="spinbox",
             widget_opts={"padx": 5, "pady": 0, "side": TOP, "anchor": NW},
+            parent_id=parent.id,
         )
         if description != None:
             self.create_label(
@@ -379,7 +396,7 @@ class UiManager:
     def is_exists_widget(self, id):
         return widgets.get(id) != None
 
-    def set_value(self, widget_id, value, scale = None):
+    def set_value(self, widget_id, value, scale=None):
         widget = self.widgets.get(widget_id)
         value = value[0]
         if widget.type == "spinbox":
@@ -392,11 +409,11 @@ class UiManager:
             if widget.type == "combobox":
                 dic = widget.dic
                 index = dic["enum"].index(value)
-                widget.current(index)    
+                widget.current(index)
 
     def get_value(self, widget_id):
         widget = self.widgets[widget_id]
-        if("disabled" not in widget.state()):
+        if "disabled" not in widget.state():
             if widget.type == "spinbox":
                 return widget.get()
 
@@ -443,28 +460,32 @@ class UiManager:
 
     def widget_hide(self, widget_id):
         widget = self.widgets.get(widget_id)
+        # if widget.type != "group":
         if widget != None:
             widget.pack_forget()
 
-        widget = self.widgets.get(widget_id + "_title")
-        if widget != None:
-            widget.pack_forget()
+            widget = self.widgets.get(widget_id + "_title")
+            if widget != None:
+                widget.pack_forget()
 
-        widget = self.widgets.get(widget_id + "_decsription")
-        if widget != None:
-            widget.pack_forget()
+            widget = self.widgets.get(widget_id + "_decsription")
+            if widget != None:
+                widget.pack_forget()
 
     def widget_show(self, widget_id):
         widget = self.widgets[widget_id]
-        widget.pack(widget.pack_info)
+        widget.pack(widget.pack_info)        
 
         widget = self.widgets.get(widget_id + "_title")
         if widget != None:
             widget.pack(widget.pack_info)
+            parent = self.widgets.get(widget.parent_id)
+            parent.pack(parent.pack_info)
 
         widget = self.widgets.get(widget_id + "_decsription")
         if widget != None:
             widget.pack(widget.pack_info)
+
 
     def widget_disable(self, widget_id):
         widget = self.widgets[widget_id]
