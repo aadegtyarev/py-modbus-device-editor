@@ -100,34 +100,50 @@ class App:
                 group_widget = self.ui.get_widget(group_id)
 
             if group_widget != None:
+                self.ui.write_log("Создаю виджеты.")
                 self.create_params(group_id, group_widget)
 
     def create_params(self, group_id, group_widget):
-        return False
         params = self.reader.get_params_by_group(group_id)
         parent = self.get_current_frame(group_widget)
 
         if len(params) > 0:
             for i in range(len(params)):
                 param = params[i]
-                self.create_widget(
-                    widget_id=key, group_widget=group_widget, param=param
-                )
+                id = param["id"]
+                self.create_widget(widget_id=id, group_widget=group_widget, param=param)
         # print(group_id, parent.type)
 
         # ToDo сделать создание виджетов
 
     def get_param_type(self, param):
-        if ("enum" in param):
-            return 'enum'
+        if "enum" in param:
+            return "enum"
 
-        if ("scale" in param):
+        if "scale" in param:
             return "double"
-        
+
         return "int"
 
     def create_widget(self, widget_id, group_widget, param):
-        print(self.get_param_type(param))
+        param_type = self.get_param_type(param)
+
+        if param_type == "enum":
+            param_id = param["id"]
+            param_title = self.reader.get_translate(param.get("title"))
+            param_default = param.get("default")
+            cmbx_dic = self.reader.get_enum_dic(param)
+            self.ui.create_combobox(
+                parent=group_widget,
+                id=param_id,
+                title=param_title,
+                dic=cmbx_dic,
+                default=param_default,
+                width=50,
+                side=TOP, 
+                anchor=NW
+            )
+
         return False
 
     def get_current_frame(self, parent):

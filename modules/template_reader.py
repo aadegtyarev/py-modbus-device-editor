@@ -24,11 +24,12 @@ class TemplateReader:
         return self.template["device"].get("setups")
 
     def get_params_by_group(self, group_id):
-        res = {}
+        res = []
         params = self.get_params()
-        for key in params:
-            if params[key].get("group") == group_id:
-                res[key] = params[key]
+        for i in range(len(params)):
+            param = params[i]
+            if param.get("group") == group_id:
+                res.append(param)
         return res
 
     def get_translate(self, string, language="ru"):
@@ -48,6 +49,10 @@ class TemplateReader:
     def get_enum_dic(self, param):
         enum = param["enum"]
         enum_titles = param["enum_titles"]
+
+        for i in range(len(enum_titles)):
+            enum_titles[i] = self.get_translate(enum_titles[i])
+        
         dic = {"enum": enum, "enum_titles": enum_titles}
         return dic
 
