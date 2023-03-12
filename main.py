@@ -264,12 +264,14 @@ class App:
                         data = client.read_holding_registers(slave=slave_id, address= address)
 
                         if hasattr(data, "registers"):
+                            self.ui.widget_enable(param["id"])
                             self.ui.set_value(param["id"], data.registers, scale=param.get("scale"))
 
                         if ("No Response received from the remote unit" in "%s" % data):
                             self.ui.write_log("Нет связи с устройством.")
                             break
                         if ("Exception Response" in "%s" % data):
+                            self.ui.widget_disable(param["id"])
                             self.ui.write_log("Регистр {} не читается.".format(address))
 
                         res =True

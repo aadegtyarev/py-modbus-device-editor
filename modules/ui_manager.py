@@ -393,7 +393,7 @@ class UiManager:
                 dic = widget.dic
                 index = dic["enum"].index(value)
                 widget.current(index)    
-                    
+
     def get_value(self, widget_id):
         widget = self.widgets[widget_id]
         if("disabled" not in widget.state()):
@@ -469,6 +469,10 @@ class UiManager:
     def widget_disable(self, widget_id):
         widget = self.widgets[widget_id]
         widget.config(state="disable")
+
+    def widget_enable(self, widget_id):
+        widget = self.widgets[widget_id]
+        widget.config(state="!disable")
 
     def open_file(self):
         file_patch = filedialog.askopenfilename()
