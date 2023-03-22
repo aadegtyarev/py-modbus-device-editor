@@ -16,6 +16,7 @@ class App:
         self.ui = ui_manager.UiManager()
         self.ui.btn_open_template.bind("<ButtonPress-1>", self.btn_open_template_click)
         self.ui.btn_read_params.bind("<ButtonPress-1>", self.btn_read_params_click)
+        self.ui.btn_write_params.bind("<ButtonPress-1>", self.btn_write_params_click)
 
         self.reader = template_reader.TemplateReader()
 
@@ -254,15 +255,28 @@ class App:
         slave_id = int(mb_params["slave_id"])
         if client.connect():
             self.ui.write_log("Открыл порт")
-            self.read_params_from_modbus(client, slave_id)
+            read_count = self.read_params_from_modbus(client, slave_id)
+            if read_count > 0:
+                self.ui.write_log(
+                    "Прочитал {} {}".format(
+                        read_count,
+                        self.numeral_noun_declension(
+                            read_count, "параметр", "параметра", "параметров"
+                        ),
+                    )
+                )
+            else:
+                self.ui.write_log("Не прочитал ни одного параметра")
+                
             self.widgets_hide_by_condition()
         else:
             self.ui.write_log("Не смог открыть порт {}".format(mb_params["port"]))
         client.disconnect()
-        return False
 
     def read_params_from_modbus(self, client, slave_id):
         params = self.reader.get_params()
+        cnt = 0
+
         if len(params) > 0:
             for i in range(len(params)):
                 param = params[i]
@@ -275,7 +289,7 @@ class App:
 
                         self.ui.set_value(param["id"], value, scale=param.get("scale"))
                         self.ui.widget_enable(param["id"])
-
+                        cnt += 1
                     except Exception as e:
                         if "ExceptionResponse" in "%s" % e:
                             self.ui.widget_disable(param["id"])
@@ -283,6 +297,74 @@ class App:
                         if "ModbusIOException" in "%s" % e:
                             self.ui.write_log("Нет связи с устройством.")
                             break
+            return cnt
 
+    def btn_write_params_click(self, event):
+        mb_params = self.ui.get_modbus_params()
+
+        client = modbus.ModbusRTUClient(mb_params)
+        slave_id = int(mb_params["slave_id"])
+        if client.connect():
+            self.ui.write_log("Открыл порт")
+            write_count = self.write_params_to_modbus(client, slave_id)
+            if write_count > 0:
+                self.ui.write_log(
+                    "Завершил запись {} {}".format(
+                        write_count,
+                        self.numeral_noun_declension(
+                            write_count, "параметр", "параметра", "параметров"
+                        ),
+                    )
+                )
+            else:
+                self.ui.write_log("Не записал ни одного параметра")
+        else:
+            self.ui.write_log("Не смог открыть порт {}".format(mb_params["port"]))
+        client.disconnect()
+
+    def write_params_to_modbus(self, client, slave_id):
+        params = self.reader.get_params()
+        cnt = 0
+
+        for i in range(len(params)):
+            param = params[i]
+
+            if param["reg_type"] == "holding":
+                value = self.ui.get_value(param["id"])
+
+                if value != None:
+                    if "scale" in param:
+                        value = value / param["scale"]
+
+                    try:
+                        value = client.write_holding(slave_id, param["address"], value)
+                        cnt += 1
+                    except Exception as e:
+                        msg = "%s" % e
+                        print(msg)
+                        if "IllegalValue" in msg:
+                            self.ui.write_log(
+                                "Регистр {} не записывается.".format(param["address"])
+                            )
+                        else:
+                            if "Message" in msg:
+                                self.ui.write_log("Не смог подключиться к устройству.")
+                            break
+
+        return cnt
+
+    # взято из интернета: https://ru.stackoverflow.com/a/1413836
+    def numeral_noun_declension(
+        self, number, nominative_singular, genetive_singular, nominative_plural
+    ):
+        return (
+            (number in range(5, 20))
+            and nominative_plural
+            or (1 in (number, (diglast := number % 10)))
+            and nominative_singular
+            or ({number, diglast} & {2, 3, 4})
+            and genetive_singular
+            or nominative_plural
+        )
 
 app = App()

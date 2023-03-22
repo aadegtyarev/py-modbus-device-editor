@@ -494,7 +494,12 @@ class UiManager:
 
     def widget_enable(self, widget_id):
         widget = self.widgets[widget_id]
-        widget.config(state="!disable")
+        
+        if widget.type == "combobox":
+            widget.config(state="readonly")
+        else:
+            widget.config(state="!disable")
+        
 
     def open_file(self):
         file_patch = filedialog.askopenfilename()
