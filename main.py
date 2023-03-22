@@ -255,7 +255,8 @@ class App:
         slave_id = int(mb_params["slave_id"])
         if client.connect():
             self.ui.write_log("Открыл порт")
-            read_count = self.read_params_from_modbus(client, slave_id)
+            params = self.reader.get_params()
+            read_count = self.read_params_from_modbus(client, slave_id, params)
             if read_count > 0:
                 self.ui.write_log(
                     "Прочитал {} {}".format(
@@ -265,16 +266,26 @@ class App:
                         ),
                     )
                 )
+                # смотрим, всё ли удалось прочитать
+                difference = len(params) - read_count
+                if difference > 0:
+                    self.ui.write_log(
+                        "Не смог прочитать {} {}. Возможно их нет в этой версии прошивки устройства. Такие параметры будут недоступны для редактирования.".format(
+                            difference,
+                            self.numeral_noun_declension(
+                                difference, "параметр", "параметра", "параметров"
+                            ),
+                        )
+                    )
             else:
                 self.ui.write_log("Не прочитал ни одного параметра")
-                
+
             self.widgets_hide_by_condition()
         else:
             self.ui.write_log("Не смог открыть порт {}".format(mb_params["port"]))
         client.disconnect()
 
-    def read_params_from_modbus(self, client, slave_id):
-        params = self.reader.get_params()
+    def read_params_from_modbus(self, client, slave_id, params):
         cnt = 0
 
         if len(params) > 0:
@@ -306,7 +317,8 @@ class App:
         slave_id = int(mb_params["slave_id"])
         if client.connect():
             self.ui.write_log("Открыл порт")
-            write_count = self.write_params_to_modbus(client, slave_id)
+            params = self.reader.get_params()
+            write_count = self.write_params_to_modbus(client, slave_id, params)
             if write_count > 0:
                 self.ui.write_log(
                     "Завершил запись {} {}".format(
@@ -322,8 +334,7 @@ class App:
             self.ui.write_log("Не смог открыть порт {}".format(mb_params["port"]))
         client.disconnect()
 
-    def write_params_to_modbus(self, client, slave_id):
-        params = self.reader.get_params()
+    def write_params_to_modbus(self, client, slave_id, params):
         cnt = 0
 
         for i in range(len(params)):
@@ -366,5 +377,6 @@ class App:
             and genetive_singular
             or nominative_plural
         )
+
 
 app = App()
