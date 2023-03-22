@@ -11,3 +11,5 @@
 ```
 python main.py
 ```
+
+![Screenshot](images/main_window.png)
