@@ -14,8 +14,8 @@ class WbTemplateReader:
         try:
             with open(json_file, "r") as j:
                 self.wb_template = json.load(j)
-        except:
-            print("Не смог открыть файл {}".format(json_file))
+        except Exception as e:
+            print("Не смог открыть файл {}. \n Ошибка: {}".format(json_file, e))
 
     def get_device_name(self):
         return self.wb_template["device"]["name"]
@@ -117,7 +117,7 @@ class WbConvertTemplate:
             f = open("{}/{}.json".format(dest_dir, device_name.replace("/", "_")), "w")
             json.dump(template, f, ensure_ascii=False, indent=4)
         except Exception as e:
-            print("{} {}".format(e, traceback.format_exc()))
+            print("{}: {} {}".format(file_patch, e, traceback.format_exc()))
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--src_dir", nargs="?", default="")

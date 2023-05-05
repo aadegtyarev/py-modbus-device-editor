@@ -502,7 +502,7 @@ class UiManager:
         
 
     def open_file(self):
-        file_patch = filedialog.askopenfilename()
+        file_patch = filedialog.askopenfilename(title="Выберите шаблон", initialdir="./templates", filetypes=[("JSON Template", "*.json")])
         return file_patch
 
     def remove_widgets_item(self, key):

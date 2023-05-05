@@ -324,7 +324,7 @@ class App:
                     "Завершил запись {} {}".format(
                         write_count,
                         self.numeral_noun_declension(
-                            write_count, "параметр", "параметра", "параметров"
+                            write_count, "параметра", "параметра", "параметров"
                         ),
                     )
                 )
