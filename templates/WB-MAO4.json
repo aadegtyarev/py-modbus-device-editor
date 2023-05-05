@@ -1,0 +1,339 @@
+{
+    "title": "WB-MAO4_template_title",
+    "device": {
+        "name": "WB-MAO4",
+        "groups": [
+            {
+                "title": "Input 1",
+                "id": "input 1",
+                "order": 1
+            },
+            {
+                "title": "Input 1 Parameters",
+                "id": "input 1 parameters",
+                "group": "input 1",
+                "order": 1,
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Input 1 Counters",
+                "id": "input 1 counters",
+                "group": "input 1",
+                "order": 2,
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Input 2",
+                "id": "input 2",
+                "order": 2
+            },
+            {
+                "title": "Input 2 Parameters",
+                "id": "input 2 parameters",
+                "group": "input 2",
+                "order": 1,
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Input 2 Counters",
+                "id": "input 2 counters",
+                "group": "input 2",
+                "order": 2,
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Input 3",
+                "id": "input 3",
+                "order": 3
+            },
+            {
+                "title": "Input 3 Parameters",
+                "id": "input 3 parameters",
+                "group": "input 3",
+                "order": 1,
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Input 3 Counters",
+                "id": "input 3 counters",
+                "group": "input 3",
+                "order": 2,
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Outputs",
+                "id": "outputs",
+                "order": 4
+            },
+            {
+                "title": "General",
+                "id": "general",
+                "order": 5
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 6
+            },
+            {
+                "title": "Debug",
+                "id": "debug",
+                "order": 7
+            }
+        ],
+        "parameters": [
+            {
+                "title": "Outputs Mode",
+                "address": 10,
+                "reg_type": "holding",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "PWM 10 V",
+                    "Analog 0-10 V"
+                ],
+                "default": 1,
+                "group": "outputs",
+                "order": 1,
+                "id": "outputs_mode"
+            },
+            {
+                "title": "PWM Frequency Factor",
+                "description": "pwm_frequency_factor_description",
+                "address": 9,
+                "reg_type": "holding",
+                "default": 24,
+                "min": 1,
+                "max": 240,
+                "group": "outputs",
+                "order": 2,
+                "id": "pwm_frequency_factor"
+            },
+            {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [
+                    96,
+                    192,
+                    384,
+                    576,
+                    1152
+                ],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1,
+                "id": "baud_rate"
+            },
+            {
+                "title": "input_hold_time_title",
+                "description": "input_hold_time_description",
+                "address": 1100,
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "group": "input 1 parameters",
+                "order": 1,
+                "id": "input 1 hold time"
+            },
+            {
+                "title": "input_double_time_title",
+                "description": "input_double_time_description",
+                "address": 1140,
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "group": "input 1 parameters",
+                "order": 2,
+                "id": "input 1 double time"
+            },
+            {
+                "title": "input_debounce_time_title",
+                "description": "input_debounce_time_description",
+                "address": 1160,
+                "reg_type": "holding",
+                "default": 50,
+                "min": 5,
+                "max": 200,
+                "group": "input 1 parameters",
+                "order": 3,
+                "id": "input 1 debounce time"
+            },
+            {
+                "title": "input_hold_time_title",
+                "description": "input_hold_time_description",
+                "address": 1101,
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "group": "input 2 parameters",
+                "order": 1,
+                "id": "input 2 hold time"
+            },
+            {
+                "title": "input_double_time_title",
+                "description": "input_double_time_description",
+                "address": 1141,
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "group": "input 2 parameters",
+                "order": 2,
+                "id": "input 2 double time"
+            },
+            {
+                "title": "input_debounce_time_title",
+                "description": "input_debounce_time_description",
+                "address": 1161,
+                "reg_type": "holding",
+                "default": 50,
+                "min": 5,
+                "max": 200,
+                "group": "input 2 parameters",
+                "order": 3,
+                "id": "input 2 debounce time"
+            },
+            {
+                "title": "input_hold_time_title",
+                "description": "input_hold_time_description",
+                "address": 1102,
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "group": "input 3 parameters",
+                "order": 1,
+                "id": "input 3 hold time"
+            },
+            {
+                "title": "input_double_time_title",
+                "description": "input_double_time_description",
+                "address": 1142,
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "group": "input 3 parameters",
+                "order": 2,
+                "id": "input 3 double time"
+            },
+            {
+                "title": "input_debounce_time_title",
+                "description": "input_debounce_time_description",
+                "address": 1162,
+                "reg_type": "holding",
+                "default": 50,
+                "min": 5,
+                "max": 200,
+                "group": "input 3 parameters",
+                "order": 3,
+                "id": "input 3 debounce time"
+            }
+        ],
+        "translations": {
+            "en": {
+                "WB-MAO4_template_title": "WB-MAO4 (4-channel analog output module)",
+                "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / Factor ",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime (s)",
+                "input_hold_time_title": "Long Press Time (ms)",
+                "input_double_time_title": "Second Press Waiting Time (ms)",
+                "input_debounce_time_title": "Debounce Time (ms)",
+                "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
+                "input_double_time_description": "If during the specified time there was no second press, then the press counts as single. Setting 0 will disable all counters except short and long",
+                "input_debounce_time_description": "Should be 5-10 times less, than double press time. If double presses are disabled, any value could be set"
+            },
+            "ru": {
+                "WB-MAO4_template_title": "WB-MAO4 (4-канальный модуль аналогового вывода)",
+                "Outputs": "Выходы",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Outputs Mode": "Режим работы выходов",
+                "PWM 10 V": "ШИМ с амплитудой 10 В",
+                "Analog 0-10 V": "аналоговый режим 0-10 В",
+                "PWM Frequency Factor": "Делитель частоты ШИМ",
+                "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / Делитель",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Input 1": "Вход 1",
+                "Input 1 Counter": "Счетчик 1",
+                "Input 1 Short Press Counter": "Счетчик короткого нажатия 1",
+                "Input 1 Long Press Counter": "Счетчик долгого нажатия 1",
+                "Input 1 Double Press Counter": "Счетчик двойного нажатия 1",
+                "Input 1 Short Long Press Counter": "Счетчик короткого, а затем долгого нажатия 1",
+                "Input 2": "Вход 2",
+                "Input 2 Counter": "Счетчик 2",
+                "Input 2 Short Press Counter": "Счетчик короткого нажатия 2",
+                "Input 2 Long Press Counter": "Счетчик долгого нажатия 2",
+                "Input 2 Double Press Counter": "Счетчик двойного нажатия 2",
+                "Input 2 Short Long Press Counter": "Счетчик короткого, а затем долгого нажатия 2",
+                "Input 3": "Вход 3",
+                "Input 3 Counter": "Счетчик 3",
+                "Input 3 Short Press Counter": "Счетчик короткого нажатия 3",
+                "Input 3 Long Press Counter": "Счетчик долгого нажатия 3",
+                "Input 3 Double Press Counter": "Счетчик двойного нажатия 3",
+                "Input 3 Short Long Press Counter": "Счетчик короткого, а затем долгого нажатия 3",
+                "Channel 1": "Канал 1",
+                "Channel 1 Duty Cycle Raw": "Сырое задание для канала 1",
+                "Channel 2": "Канал 2",
+                "Channel 2 Duty Cycle Raw": "Сырое задание для канала 2",
+                "Channel 3": "Канал 3",
+                "Channel 3 Duty Cycle Raw": "Сырое задание для канала 3",
+                "Channel 4": "Канал 4",
+                "Channel 4 Duty Cycle Raw": "Сырое задание для канала 4",
+                "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Supply voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "input_hold_time_title": "Время длинного нажатия (мс)",
+                "input_double_time_title": "Время ожидания второго нажатия (мс)",
+                "input_debounce_time_title": "Время подавления дребезга (мс)",
+                "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
+                "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
+                "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Если двойные нажатия отключены - любое значение"
+            }
+        },
+        "setup": null
+    }
+}
