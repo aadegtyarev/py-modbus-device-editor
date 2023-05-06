@@ -65,6 +65,8 @@ class App:
         try:
             # парсинг
             self.reader.read_template(file_patch)
+            title = self.reader.get_device_name()
+            self.ui.set_left_frame_title("Настройки устройства {}".format(title))
             return True
         except Exception as e:
             self.ui.write_log("Ошибка:")

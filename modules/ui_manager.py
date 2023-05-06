@@ -14,6 +14,7 @@ class UiManager:
     win = None
     log = None
     notebook = None
+    left_frame = None
 
     btn_read_params = None
     btn_write_params = None
@@ -168,7 +169,7 @@ class UiManager:
         )
 
         # Левый фрейм
-        left_frame = self.create_group(
+        self.left_frame = self.create_group(
             parent=bottom_frame,
             id="nodel_left_frame",
             title="Настройки устройства",
@@ -178,7 +179,7 @@ class UiManager:
         )
 
         self.notebook = self.create_notebook(
-            parent=left_frame,
+            parent=self.left_frame,
             id="nodel_params_notebook",
             side=TOP,
             fill=BOTH,
@@ -395,6 +396,9 @@ class UiManager:
 
     def is_exists_widget(self, id):
         return widgets.get(id) != None
+
+    def set_left_frame_title(self, title):
+        self.left_frame.configure(text= title)
 
     def set_value(self, widget_id, value, scale=None):
         widget = self.widgets.get(widget_id)
