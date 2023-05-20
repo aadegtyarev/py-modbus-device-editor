@@ -287,14 +287,32 @@ class App:
             self.ui.write_log("Не смог открыть порт {}".format(mb_params["port"]))
         client.disconnect()
 
-    def read_params_from_modbus(self, client, slave_id, params):
-        cnt = 0
+    def prepare_address(self, address):
+        if type(address) is str:
+            return int(address,16) 
+        else:
+            return int(address)
 
+    def prepare_reg_type(self, reg_type):
+        if (reg_type == None):
+            return "holding"
+        else:
+            return reg_type
+
+
+    def read_params_from_modbus(self, client, slave_id, params):
+        cnt = 0       
         if len(params) > 0:
             for i in range(len(params)):
                 param = params[i]
-                address = int(param["address"])
-                if param["reg_type"] == "holding":
+
+                # адреса пишут то в HEX то в DEC, надо определять и преобразовывать в DEC
+                address = self.prepare_address(param["address"])
+
+                # бывает, что тип регистра не пишет, надо присвоить значение по умолчанию
+                reg_type = self.prepare_reg_type(param.get("reg_type")) 
+
+                if (reg_type == "holding"):
                     try:
                         value = client.read_holding(
                             slave_id=slave_id, reg_address=address
@@ -341,23 +359,25 @@ class App:
 
         for i in range(len(params)):
             param = params[i]
+            reg_type = self.prepare_reg_type(param.get("reg_type"))
+            address = self.prepare_address(param["address"])
 
-            if param["reg_type"] == "holding":
+            if reg_type == "holding":
                 value = self.ui.get_value(param["id"])
 
                 if value != None:
-                    if "scale" in param:
-                        value = value / param["scale"]
+                    if "scale" in param:          
+                        value = float(value) / param["scale"]                        
 
                     try:
-                        value = client.write_holding(slave_id, param["address"], value)
+                        value = client.write_holding(slave_id, address, value)
                         cnt += 1
                     except Exception as e:
                         msg = "%s" % e
                         print(msg)
                         if "IllegalValue" in msg:
                             self.ui.write_log(
-                                "Регистр {} не записывается.".format(param["address"])
+                                "Регистр {} не записывается.".format(address)
                             )
                         else:
                             if "Message" in msg:
