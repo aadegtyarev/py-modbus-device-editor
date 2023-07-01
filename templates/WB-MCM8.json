@@ -180,14 +180,48 @@
                 }
             },
             {
+                "title": "Encoders",
+                "id": "g_encoders",
+                "order": 9
+            },
+            {
+                "title": "Encoder 1",
+                "id": "gg_encoder_1",
+                "order": 1,
+                "group": "g_encoders"
+            },
+            {
+                "title": "Encoder 2",
+                "id": "gg_encoder_2",
+                "order": 2,
+                "group": "g_encoders"
+            },
+            {
+                "title": "Encoder 3",
+                "id": "gg_encoder_3",
+                "order": 3,
+                "group": "g_encoders"
+            },
+            {
+                "title": "encoder_channels",
+                "id": "gg_encoder_channels",
+                "order": 4,
+                "group": "g_encoders",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
                 "title": "General",
                 "id": "g_general",
-                "order": 9
+                "order": 10
             },
             {
                 "title": "HW Info",
                 "id": "g_hw_info",
-                "order": 10
+                "order": 11
             }
         ],
         "parameters": [
@@ -640,6 +674,86 @@
                 "id": "in8_secp_waiting_time"
             },
             {
+                "title": "Encoder connection type",
+                "description": "encoder_1_mode_description",
+                "address": 376,
+                "reg_type": "holding",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "default": 0,
+                "enum_titles": [
+                    "Not used",
+                    "AB type",
+                    "ABZ type"
+                ],
+                "group": "gg_encoder_1",
+                "order": 1,
+                "id": "encoder_1_mode"
+            },
+            {
+                "title": "Pulses per revolution (PPR)",
+                "address": 380,
+                "reg_type": "holding",
+                "default": 0,
+                "min": 0,
+                "group": "gg_encoder_1",
+                "order": 2,
+                "condition": "encoder_1_mode==2",
+                "id": "encoder_1_ppr"
+            },
+            {
+                "title": "Encoder connection type",
+                "description": "encoder_2_mode_description",
+                "address": 377,
+                "reg_type": "holding",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "default": 0,
+                "enum_titles": [
+                    "Not used",
+                    "AB type",
+                    "ABZ type"
+                ],
+                "group": "gg_encoder_2",
+                "order": 1,
+                "id": "encoder_2_mode"
+            },
+            {
+                "title": "Pulses per revolution (PPR)",
+                "address": 381,
+                "reg_type": "holding",
+                "default": 0,
+                "min": 0,
+                "group": "gg_encoder_2",
+                "order": 2,
+                "condition": "encoder_2_mode==2",
+                "id": "encoder_2_ppr"
+            },
+            {
+                "title": "Mode",
+                "description": "encoder_3_mode_description",
+                "address": 378,
+                "reg_type": "holding",
+                "enum": [
+                    0,
+                    1
+                ],
+                "default": 0,
+                "enum_titles": [
+                    "Not used",
+                    "AB type"
+                ],
+                "group": "gg_encoder_3",
+                "order": 1,
+                "id": "encoder_3_mode"
+            },
+            {
                 "title": "Baud rate",
                 "description": "baud_rate_description",
                 "address": 110,
@@ -674,8 +788,11 @@
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
                 "debounce_time_title": "Debounce Time (ms)",
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
-                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long",
-                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time"
+                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
+                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
+                "encoder_1_mode_description": "When disabled inputs 1, 2 and 3 work as usual with own mode configuration. <br>AB mode use 1 and 2 inputs for represent position in pulses count only. Input 3 work as usual. <br>In ABZ mode input 3 connected to Z signal (one puls per revolution) and position represented in revolutions counter and angle (pulses in one turn) counter.",
+                "encoder_2_mode_description": "When disabled inputs 4, 5 and 6 work as usual with own mode configuration. <br>AB mode use 4 and 5 inputs for represent position in pulses count only. Input 6 work as usual. <br>In ABZ mode input 6 connected to Z signal (one puls per revolution) and position represented in revolutions counter and angle (pulses in one turn) counter.",
+                "encoder_3_mode_description": "When disabled inputs 7 and 8 work as usual with own mode configuration. <br>AB mode use 7 and 8 inputs for represent position in pulses count only."
             },
             "ru": {
                 "WB-MCM8_template_title": "WB-MCM8 (8-канальный модуль счетных входов)",
@@ -748,8 +865,8 @@
                 "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
                 "debounce_time_title": "Время подавления дребезга (мс)",
                 "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
-                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
-                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия",
+                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
+                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
                 "Reset all counters": "Сбросить все счетчики",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
@@ -757,7 +874,28 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК"
+                "MCU Voltage": "Напряжение питания МК",
+                "Encoders": "Работа с энкодерами",
+                "Encoder connection type": "Тип подключения энкодера",
+                "Not used": "Не используется",
+                "AB type": "2 сигнала, тип AB",
+                "ABZ type": "3 сигнала, тип ABZ",
+                "Encoder 1": "Энкодер 1",
+                "Encoder 1 position": "Положение энкодера 1",
+                "Encoder 1 revolutions": "Количество оборотов энкодера 1",
+                "Encoder 1 angle": "Угол внутри оборота энкодера 1",
+                "Encoder 2": "Энкодер 2",
+                "Encoder 2 position": "Положение энкодера 2",
+                "Encoder 2 revolutions": "Количество оборотов энкодера 2",
+                "Encoder 2 angle": "Угол внутри оборота энкодера 2",
+                "Encoder 3": "Энкодер 3",
+                "Encoder 3 position": "Положение энкодера 3",
+                "Encoder 3 revolutions": "Количество оборотов энкодера 3",
+                "Encoder 3 angle": "Угол внутри оборота энкодера 3",
+                "encoder_1_mode_description": "Когда отключен, входы 1, 2 и 3 работают как обычные входы со своими настройками режима. <br>В режиме AB входы 1 и 2 подключены к выходам A и B энкодера. Положение представляется как счетчик импульсов. Вход 3 работает как обычный вход. <br>В режиме ABZ вход 3 подключен к выходу Z энкодера (один импульс на оборот). Положение представляется как отдельный счетчик оборотов и отдельный счетчик угла внутри оборота.",
+                "encoder_2_mode_description": "Когда отключен, входы 4, 5 и 6 работают как обычные входы со своими настройками режима. <br>В режиме AB входы 4 и 5 подключены к выходам A и B энкодера. Положение представляется как счетчик импульсов. Вход 6 работает как обычный вход. <br>В режиме ABZ вход 6 подключен к выходу Z энкодера (один импульс на оборот). Положение представляется как отдельный счетчик оборотов и отдельный счетчик угла внутри оборота.",
+                "encoder_3_mode_description": "Когда отключен, входы 7 и 8 работают как обычные входы со своими настройками режима. <br>В режиме AB входы 7 и 8 подключены к выходам A и B энкодера. Положение представляется как счетчик импульсов.",
+                "Pulses per revolution (PPR)": "Количество импульсов на один оборот. <br>Введите значение, указанное на энкодере."
             }
         },
         "setup": null
